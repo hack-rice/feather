@@ -1,3 +1,6 @@
+# csv directory
+csv/
+
 # ds store
 .DS_Store
 .idea
