@@ -1,4 +1,4 @@
-"""main file"""
+"""File that contains the load_applicants function."""
 
 import os
 from os import path
@@ -29,7 +29,7 @@ def _split_name(name: str) -> Tuple[str, str]:
     return names[0], names[1] if len(names) == 2 else ""
 
 
-def load_applicants():
+def load_applicants() -> None:
     """Create a csv in /csv with information on all users whose submitted applications haven't
     been evaluated.
 
@@ -37,7 +37,7 @@ def load_applicants():
         (b) they haven't been accepted. For compatibility with our current Quill version, we
         have to delete rejected applicants from the database.
 
-    CSV EXAMPLE:
+    EXAMPLE ENTRIES:
         "abcdefgh","John","Smith","http://example.herokuapp.com/admin/users/abcdefgh"
         "ijklmnop","Jane","Doe","http://example.herokuapp.com/admin/users/ijklmnop"
     """
@@ -47,13 +47,16 @@ def load_applicants():
     users = db["users"]
 
     # create a nested csv directory, if it doesn't already exist
-    os.makedirs(path.join(PATH, "csv"), exist_ok=True)
+    os.makedirs(path.join(PATH, "outbox"), exist_ok=True)
 
-    csv_filename = path.join(PATH, "csv", f"applicants{datetime.now()}.csv")
+    csv_filename = path.join(PATH, "outbox", f"applicants{datetime.now()}.csv")
 
     # create and populate the csv file
     with open(csv_filename, "w", newline="") as applicants_file:
         wr = csv.writer(applicants_file, quoting=csv.QUOTE_ALL)
+
+        # add column headers
+        wr.writerow(["ID (Don't Change!)", "First Name", "Last Name", "Application Link"])
 
         applicants = [user for user in users.find()
                       if user["status"]["completedProfile"] and not user["status"]["admitted"]]
@@ -66,7 +69,7 @@ def load_applicants():
             # add user info to the csv file
             wr.writerow([applicant_id, first_name, last_name, application_url])
 
-    print(f"File was created successfully in {PATH}/csv")
+    print(f"File was created successfully in {PATH}/outbox")
 
 
 if __name__ == "__main__":
