@@ -1,6 +1,5 @@
-# csv directories
-inbox/
-outbox/
+# csv
+*.csv
 
 # ds store
 .DS_Store
