@@ -1,6 +1,7 @@
 """main file"""
 
 import os
+from os import path
 from datetime import datetime
 import csv
 from typing import Tuple
@@ -24,7 +25,7 @@ def _split_name(name: str) -> Tuple[str, str]:
         else in the second element (e.g. tuple("John", "Smith"))
     """
     # split into two pieces at the first space
-    names = name.split(name, maxsplit=1)
+    names = name.split(" ", maxsplit=1)
     return names[0], names[1] if len(names) == 2 else ""
 
 
@@ -46,14 +47,16 @@ def load_applicants():
     users = db["users"]
 
     # create a nested csv directory, if it doesn't already exist
-    os.makedirs(f"{PATH}/csv", exist_ok=True)
+    os.makedirs(path.join(PATH, "csv"), exist_ok=True)
 
-    applicants = [user for user in users.find()
-                  if user["status"]["completedProfile"] and not user["status"]["admitted"]]
+    csv_filename = path.join(PATH, "csv", f"applicants{datetime.now()}.csv")
 
     # create and populate the csv file
-    with open(f"{PATH}/csv/applicants{datetime.now()}.csv", "w", newline="") as applicants_file:
+    with open(csv_filename, "w", newline="") as applicants_file:
         wr = csv.writer(applicants_file, quoting=csv.QUOTE_ALL)
+
+        applicants = [user for user in users.find()
+                      if user["status"]["completedProfile"] and not user["status"]["admitted"]]
 
         for applicant in applicants:
             applicant_id = applicant["_id"]
@@ -67,6 +70,4 @@ def load_applicants():
 
 
 if __name__ == "__main__":
-    # load_applicants()
-    ex = "hello"
-    print(ex.split(" ", maxsplit=1))
+    load_applicants()
