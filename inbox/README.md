@@ -1,3 +1,3 @@
 # Inbox
 
-This is where scripts in this package look for files to read.
+This is where scripts in this repo look for files to read.
