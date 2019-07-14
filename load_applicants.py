@@ -38,8 +38,8 @@ def load_applicants() -> None:
         have to delete rejected applicants from the database.
 
     EXAMPLE ENTRIES:
-        "abcdefgh","John","Smith","http://example.herokuapp.com/admin/users/abcdefgh"
-        "ijklmnop","Jane","Doe","http://example.herokuapp.com/admin/users/ijklmnop"
+        "jsmith@mit.edu","John","Smith","http://example.herokuapp.com/admin/users/abcdefgh"
+        "jdoe@wustl.edu","Jane","Doe","http://example.herokuapp.com/admin/users/ijklmnop"
     """
     # connect to the database and get the users collection
     client = MongoClient(Config.MONGODB_URI)
@@ -56,7 +56,7 @@ def load_applicants() -> None:
         wr = csv.writer(applicants_file, quoting=csv.QUOTE_ALL)
 
         # add column headers
-        wr.writerow(["ID (Don't Change!)", "First Name", "Last Name", "Application Link"])
+        wr.writerow(["Email", "First Name", "Last Name", "Application Link"])
 
         applicants = [user for user in users.find()
                       if user["status"]["completedProfile"] and not user["status"]["admitted"]]
