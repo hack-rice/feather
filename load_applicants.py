@@ -62,12 +62,12 @@ def load_applicants() -> None:
                       if user["status"]["completedProfile"] and not user["status"]["admitted"]]
 
         for applicant in applicants:
-            applicant_id = applicant["_id"]
+            email = applicant["email"]
             first_name, last_name = _split_name(applicant["profile"]["name"])
-            application_url = f"{Config.BASE_URL}/admin/users/{applicant_id}"
+            application_url = f"{Config.BASE_URL}/admin/users/{applicant['_id']}"
 
             # add user info to the csv file
-            wr.writerow([applicant_id, first_name, last_name, application_url])
+            wr.writerow([email, first_name, last_name, application_url])
 
     print(f"File was created successfully in {PATH}/outbox")
 

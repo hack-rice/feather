@@ -9,6 +9,11 @@ load_dotenv()
 
 class Config:
     """Class that contains necessary config information."""
+    # database info
     MONGODB_URI = os.environ["MONGODB_URI"]
     DB_NAME = os.environ["DB_NAME"]
     BASE_URL = os.environ["BASE_URL"]
+
+    # personal email info
+    EMAIL = os.environ["EMAIL"]
+    EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
