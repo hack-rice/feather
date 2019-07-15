@@ -1,13 +1,10 @@
 
 from typing import Iterator, Tuple
-from collections import namedtuple
 
 from pymongo import MongoClient
 
 from config import Config
-
-
-User = namedtuple("User", "id email first_name last_name")
+from utils.models import User
 
 
 def _split_name(name: str) -> Tuple[str, str]:
@@ -31,8 +28,9 @@ def parse_to_user(user_json) -> User:
 
 
 class QuillDao:
-    """Class that represents the data access object for Quill's database."""
+    """Data access object for Quill's database."""
     def __init__(self):
+        """Initialize a QuillDao."""
         # connect to the database
         client = MongoClient(Config.MONGODB_URI)
         db = client[Config.DB_NAME]
