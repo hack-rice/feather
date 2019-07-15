@@ -5,7 +5,7 @@ from datetime import datetime
 import csv
 
 from config import Config
-from quill_dao import QuillDao
+from utils.quill_dao import QuillDao
 
 
 def _main() -> None:
@@ -20,9 +20,7 @@ def _main() -> None:
         "jsmith@mit.edu","John","Smith","http://example.herokuapp.com/admin/users/abcdefgh"
         "jdoe@wustl.edu","Jane","Doe","http://example.herokuapp.com/admin/users/ijklmnop"
     """
-    # connect to the database and get the users collection
     dao = QuillDao()
-
     csv_filename = path.join(Config.OUTBOX_PATH, f"applicants{datetime.now()}.csv")
 
     # create and populate the csv file
