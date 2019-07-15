@@ -15,7 +15,7 @@ PATH = path.dirname(path.abspath(__file__))
 
 
 Applicant = namedtuple("Applicant", "email first_name decision")
-Applicant.__doc__ = """Namedtuple that represents an hackathon applicant."""
+Applicant.__doc__ = """Namedtuple that represents a hackathon applicant."""
 
 
 def evaluate_applicants(csv_filename: str) -> Set[Applicant]:
