@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from config import Config
+from utils.data_packet import EndOfStreamPacket, DataPacket
 
 
 def _send_email(server, applicant):
@@ -24,9 +25,9 @@ def _send_email(server, applicant):
 
 
 class EmailDaemon(Thread):
-    def __init__(self, queue: Queue) -> None:
+    def __init__(self, queue: Queue[DataPacket]) -> None:
         super().__init__(daemon=True)
-        self.queue = queue
+        self._queue = queue
 
     def run(self) -> None:
         # we need the context to stay true for us to send mass emails
@@ -35,5 +36,8 @@ class EmailDaemon(Thread):
             server.login(Config.EMAIL, Config.EMAIL_PASSWORD)
 
             while True:
-                applicant = self.queue.get()
+                data = self._queue.get()
+                if isinstance(data, EndOfStreamPacket):
+                    break
+
                 _send_email(server, applicant)
