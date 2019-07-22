@@ -18,12 +18,14 @@ Note that `MONGODB_URI` and `DB_NAME` refer to the database quill uses on its ba
 deployed quill with heroku, you can find some of this info in the generated Config Vars and the
 rest by digging around in mLab.
 
-## evaluate.py
+## Scripts
+
+### evaluate.py
 
 This script will let you accept, reject, and waitlist applicants by uploading a csv with necessary
 information on each applicant.
 
-## load_applicants.py
+### load_applicants.py
 
 This script will load a csv with necessary information on submitted users whose applications haven't
 been evaluated yet.
