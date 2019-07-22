@@ -8,35 +8,41 @@ from utils.models import Evaluation
 
 
 def write_evaluations_to_csv(title: str, evaluations: Set[Evaluation]) -> None:
-    csv_filename = path.join(Config.OUTBOX_PATH, f"{title}{datetime.now()}.csv")
+    """Write the input users to a csv in the outbox directory.
+
+    EXAMPLE ENTRIES:
+        "jsmith@mit.edu","John","waitlist"
+        "jdoe@wustl.edu","Jane","accept"
+    """
+    csv_filepath = path.join(Config.OUTBOX_PATH, f"{title}{datetime.now()}.csv")
 
     # create and populate the csv file
-    with open(csv_filename, "w", newline="") as evals_file:
+    with open(csv_filepath, "w", newline="") as evals_file:
         wr = csv.writer(evals_file, quoting=csv.QUOTE_ALL)
 
         # add column headers
         wr.writerow(["email", "first name", "decision"])
 
         for evaluation in evaluations:
+            # add evaluation info to the csv file
             wr.writerow(
                 [evaluation.email, evaluation.first_name, evaluation.decision]
             )
 
-    print(f"\n\tFile was created successfully in {Config.OUTBOX_PATH}")
+    print(f"File was created successfully in {Config.OUTBOX_PATH}")
 
 
 def write_users_to_csv(title: str, users):
-    """Create a csv in the outbox directory with information on all users whose submitted
-    applications haven't been evaluated.
+    """Write the input users to a csv in the outbox directory.
 
     EXAMPLE ENTRIES:
         "jsmith@mit.edu","John","Smith","http://example.herokuapp.com/admin/users/abcdefgh"
         "jdoe@wustl.edu","Jane","Doe","http://example.herokuapp.com/admin/users/ijklmnop"
     """
-    csv_filename = path.join(Config.OUTBOX_PATH, f"{title}{datetime.now()}.csv")
+    csv_filepath = path.join(Config.OUTBOX_PATH, f"{title}{datetime.now()}.csv")
 
     # create and populate the csv file
-    with open(csv_filename, "w", newline="") as users_file:
+    with open(csv_filepath, "w", newline="") as users_file:
         writer = csv.writer(users_file, quoting=csv.QUOTE_ALL)
 
         # add column headers

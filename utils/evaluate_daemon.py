@@ -1,12 +1,14 @@
 
 from threading import Thread
+from typing import Iterable
 
 from utils.quill_dao import QuillDao
-from utils.data_packet import EmailPacket, EndOfStreamPacket
+from utils.email.data_packet import EmailPacket, EndOfStreamPacket
+from utils.models import Evaluation
 
 
 class EvaluateDaemon(Thread):
-    def __init__(self, evaluations, email_queue):
+    def __init__(self, evaluations: Iterable[Evaluation], email_queue: "Queue"):
         super().__init__(daemon=True)
         self._evaluations = evaluations
         self._email_queue = email_queue

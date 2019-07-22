@@ -1,9 +1,9 @@
 """File that contains the evaluate_applicants function."""
 from queue import Queue
 
-from utils.csv_readers import read_evaluations
-from utils.csv_writers import write_evaluations_to_csv
-from utils.email_daemon import EmailDaemon
+from utils.csv.readers import read_evaluations
+from utils.csv.writers import write_evaluations_to_csv
+from utils.email.email_daemon import EmailDaemon
 from utils.evaluate_daemon import EvaluateDaemon
 
 

@@ -1,6 +1,6 @@
 """File that contains the load_applicants function."""
 
-from utils.csv_writers import write_users_to_csv
+from utils.csv.writers import write_users_to_csv
 from utils.quill_dao import QuillDao
 
 

@@ -14,8 +14,9 @@ def read_evaluations(csv_filename: str) -> Iterator[Evaluation]:
     Inspired by Anthony Fox:
         https://medium.com/anthony-fox/parsing-large-csv-files-with-python-854ab8f398ad
 
-    :param csv_filename: name of the csv file of evaluations.
-    :return: a generator of Evaluation objects
+    :param csv_filename: name of the csv file of evaluations. Must be located
+        in the inbox directory.
+    :return: a generator of Evaluation objects.
     """
     # configure file path
     filepath = path.join(Config.INBOX_PATH, csv_filename)
