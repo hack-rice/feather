@@ -4,7 +4,7 @@ from os import path
 from typing import Set
 
 from config import Config
-from utils.models import Evaluation
+from feather.models import Evaluation
 
 
 def write_evaluations_to_csv(title: str, evaluations: Set[Evaluation]) -> None:

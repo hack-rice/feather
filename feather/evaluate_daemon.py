@@ -2,9 +2,9 @@
 from threading import Thread
 from typing import Iterable
 
-from utils.quill_dao import QuillDao
-from utils.email.data_packet import EmailPacket, EndOfStreamPacket
-from utils.models import Evaluation
+from feather.quill_dao import QuillDao
+from feather.email.data_packet import EmailPacket, EndOfStreamPacket
+from feather.models import Evaluation
 
 
 class EvaluateDaemon(Thread):

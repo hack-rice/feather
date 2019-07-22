@@ -1,10 +1,10 @@
 """File that contains the evaluate_applicants function."""
 from queue import Queue
 
-from utils.csv.readers import read_evaluations
-from utils.csv.writers import write_evaluations_to_csv
-from utils.email.email_daemon import EmailDaemon
-from utils.evaluate_daemon import EvaluateDaemon
+from feather.csv.readers import read_evaluations
+from feather.csv.writers import write_evaluations_to_csv
+from feather.email.email_daemon import EmailDaemon
+from feather.evaluate_daemon import EvaluateDaemon
 
 
 def _main() -> None:

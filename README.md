@@ -10,12 +10,12 @@ and much more. See below for more details.
 ## How to get it started
 
 This all assumes that you have a running version of [Quill](https://github.com/techx/quill) 
-_somewhere_, as that's kind of the point. Then, you'll need to copy and paste the `example.env`
+_somewhere_, as that's kind of the point. You'll also need to copy and paste the `example.env`
 file into your own `.env` file in the same directory, changing the environment variables as
 necessary.
 
-Note that `MONGODB_URI` and `DB_NAME` refer to the database quill uses on its backend. If you've
-deploy quill with heroku, you can find some of this info in the generated Config Vars and the
+Note that `MONGODB_URI` and `DB_NAME` refer to the database quill uses on its backend. If you
+deployed quill with heroku, you can find some of this info in the generated Config Vars and the
 rest by digging around in mLab.
 
 ## evaluate.py

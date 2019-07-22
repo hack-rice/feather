@@ -4,7 +4,7 @@ from typing import Iterator, Tuple
 from pymongo import MongoClient
 
 from config import Config
-from utils.models import User
+from feather.models import User
 
 
 def _split_name(name: str) -> Tuple[str, str]:

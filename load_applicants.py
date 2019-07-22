@@ -1,7 +1,7 @@
 """File that contains the load_applicants function."""
 
-from utils.csv.writers import write_users_to_csv
-from utils.quill_dao import QuillDao
+from feather.csv.writers import write_users_to_csv
+from feather.quill_dao import QuillDao
 
 
 if __name__ == "__main__":

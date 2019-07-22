@@ -3,7 +3,7 @@ from typing import Iterator
 from os import path
 
 from config import Config
-from utils.models import Evaluation
+from feather.models import Evaluation
 
 
 def read_evaluations(csv_filename: str) -> Iterator[Evaluation]:

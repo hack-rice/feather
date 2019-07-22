@@ -5,8 +5,8 @@ import smtplib
 import ssl
 
 from config import Config
-from utils.email.data_packet import EndOfStreamPacket
-from utils.email.create_email import create_email
+from feather.email.data_packet import EndOfStreamPacket
+from feather.email.create_email import create_email
 
 
 class EmailDaemon(Thread):
