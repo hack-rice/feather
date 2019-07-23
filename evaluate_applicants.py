@@ -1,4 +1,4 @@
-"""File that contains the evaluate_applicants function."""
+"""Script that evaluates applicants."""
 from queue import Queue
 
 from feather.csv.readers import read_evaluations

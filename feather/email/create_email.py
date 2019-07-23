@@ -12,10 +12,11 @@ def _render_template(filename, first_name):
     return template.render(first_name=first_name)
 
 
-def create_email(applicant):
-    mail = MIMEText(_render_template("accept.html", "Hugh"), "html")
-    mail["Subject"] = "testing!"
+def create_email(filename, email_subject, to_email, first_name):
+    # render html and populate email headers
+    mail = MIMEText(_render_template(filename, first_name), "html")
+    mail["Subject"] = email_subject
     mail["From"] = Config.EMAIL
-    mail["To"] = "horeilly1101@gmail.com"
+    mail["To"] = to_email
 
     return mail

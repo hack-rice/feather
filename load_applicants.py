@@ -1,5 +1,6 @@
-"""File that contains the load_applicants function."""
-
+"""Script that loads unevaluated applicants from the database and places them
+in a csv file in the outbox directory.
+"""
 from feather.csv.writers import write_users_to_csv
 from feather.quill_dao import QuillDao
 

@@ -1,8 +1,6 @@
-
+"""File that contains the QuillDao class."""
 from typing import Iterator, Tuple
-
 from pymongo import MongoClient
-
 from config import Config
 from feather.models import User
 
@@ -45,8 +43,8 @@ class QuillDao:
         db = client[Config.DB_NAME]
 
         # store some collections
-        self.users = db["users"]
-        self.rejected_users = db["rejected_users"]
+        self._users = db["users"]
+        self._rejected_users = db["rejected_users"]
 
     # -------------------
     # Read methods
@@ -58,7 +56,7 @@ class QuillDao:
         :return: an iterator of Users. This evaluates lazily, so the output is about as
             space efficient as we can hope for.
         """
-        return (parse_to_user(user_json) for user_json in self.users.find()
+        return (parse_to_user(user_json) for user_json in self._users.find()
                 if user_json["status"]["completedProfile"]
                 and not user_json["status"]["admitted"])
 
@@ -66,8 +64,15 @@ class QuillDao:
     # Write methods
     # -------------------
 
-    def accept_applicant(self, email: str):
-        self.users.find_one_and_update(
+    def accept_applicant(self, email: str) -> None:
+        """
+        Accept an applicant to the hackathon. This function will (a) mark the applicant
+        as admitted in the database and (b) note that they were admitted by the user whose
+        email is set up in the .env file.
+
+        :param email: the email of the applicant to be admitted
+        """
+        self._users.find_one_and_update(
             {"email": email},
             {"$set": {
                 "admitted": True,
@@ -75,11 +80,26 @@ class QuillDao:
             }}
         )
 
-    def reject_applicant(self, email: str):
-        # move the applicant's info to the rejected_users collection
-        profile = self.users.find_one_and_delete({"email": email})
-        self.rejected_users.insert_one(profile)
+    def reject_applicant(self, email: str) -> None:
+        """
+        Reject an applicant from the hackathon. This function will (a) delete the user
+        from the database and (b) move all of their account information to the rejected_users
+        collection in the database.
 
-    def waitlist_applicant(self, email: str):
+        This feels kind of hacky, because it means that rejected users will no longer be
+        able to access their accounts. But as far as I can tell, this is the only way to
+        reject users and maintain backwards compatibility with multiple versions of quill.
+
+        :param email: the email of the applicant to be rejected
+        """
+        # move the applicant's info to the rejected_users collection
+        profile = self._users.find_one_and_delete({"email": email})
+        self._rejected_users.insert_one(profile)
+
+    def waitlist_applicant(self, email: str) -> None:
+        """
+        Waitlist an applicant from the hackathon. This is a no op.
+        :param email: the email of the applicant to be rejected.
+        """
         # do nothing
         pass

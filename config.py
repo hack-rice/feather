@@ -23,6 +23,9 @@ class Config:
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
     EMAIL_HOST = os.environ["EMAIL_HOST"]
 
+    # the name of the event
+    EVENT_NAME = os.environ["EVENT_NAME"]
+
     # the directory all csv files will be written in
     OUTBOX_PATH = path.join(PATH, "outbox")
 
