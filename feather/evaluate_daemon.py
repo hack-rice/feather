@@ -36,7 +36,7 @@ class EvaluateDaemon(Thread):
             # --------------------
 
             if evaluation.decision == "reject":
-                # dao.reject_applicant(evaluation.email)
+                dao.reject_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been rejected.")
 
                 self._email_queue.put(
@@ -44,7 +44,7 @@ class EvaluateDaemon(Thread):
                 )
 
             elif evaluation.decision == "accept":
-                # dao.accept_applicant(evaluation.email)
+                dao.accept_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been accepted.")
 
                 self._email_queue.put(
@@ -52,7 +52,7 @@ class EvaluateDaemon(Thread):
                 )
 
             elif evaluation.decision == "waitlist":
-                # dao.waitlist_applicant(evaluation.email)
+                dao.waitlist_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been waitlisted.")
 
                 self._email_queue.put(
