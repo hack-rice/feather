@@ -1,4 +1,19 @@
 {% extends "base.html" %}
 {% block email_message %}
-    <p>Unfortunately</p>
+    <p>
+        Hi {{ first_name }},
+    </p>
+    <p>
+        Thank you for your interest in HackRice 9! We saw an unprecedented amount of
+        interest and talent among all of our applicants. It was incredibly competitive
+        this year, and we have decided to waitlist your application. Keep an eye out:
+        you'll receive your decision when the next wave of applications are completed.
+    </p>
+    <p>
+        If you have any questions, please reach out at hack@rice.edu.
+    </p>
+    <p>
+        Best,<br>
+        The HackRice Team
+    </p>
 {% endblock %}

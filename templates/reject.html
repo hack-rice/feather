@@ -1,4 +1,24 @@
 {% extends "base.html" %}
 {% block email_message %}
-    <p>Unfortunately</p>
+    <p>
+        Hi {{ first_name }},
+    </p>
+    <p>
+        Thank you for your interest in HackRice 9! We saw an unprecedented amount of
+        interest and talent among all of our applicants. Each application was reviewed
+        carefully, and with limited positions, we had to make difficult decisions.
+        Unfortunately, your application was not among those that we were able to
+        accept.
+    </p>
+    <p>
+        We wish you the best of luck in your future hackathon pursuits, and please
+        apply again next year!
+    </p>
+    <p>
+        If you have any questions, please reach out at hack@rice.edu.
+    </p>
+    <p>
+        Best,<br>
+        The HackRice Team
+    </p>
 {% endblock %}
