@@ -3,10 +3,13 @@ from threading import Thread
 from queue import Queue
 import smtplib
 import ssl
+import logging
 
 from config import Config
 from feather.email.data_packet import EndOfStreamPacket
 from feather.email.create_email import create_email
+
+LOGGER = logging.getLogger(__name__)
 
 
 class EmailDaemon(Thread):
@@ -19,6 +22,8 @@ class EmailDaemon(Thread):
         """Run method for the EmailDaemon. This method listens on self._queue and sends
         an email when ordered to. The daemon will run until it receives an EndOfStreamPacket.
         """
+        LOGGER.info("The EmailDaemon thread is starting.")
+
         # start the server and log in to your email account
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(Config.EMAIL_HOST, 465, context=context) as server:
@@ -35,3 +40,7 @@ class EmailDaemon(Thread):
                 server.sendmail(
                     Config.EMAIL, data.email, mail.as_string()
                 )
+
+                LOGGER.info(f"Email sent. (name={data.first_name}, email={data.email}, template={data.template_name})")
+
+        LOGGER.info("The EmailDaemon thread is finished.")

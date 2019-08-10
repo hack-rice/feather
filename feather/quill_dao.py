@@ -60,6 +60,8 @@ class QuillDao:
                 if user_json["status"]["completedProfile"]
                 and not user_json["status"]["admitted"])
 
+    # def get_unsubmitted_applicants(self) -> Iterator[User]:
+
     # -------------------
     # Write methods
     # -------------------

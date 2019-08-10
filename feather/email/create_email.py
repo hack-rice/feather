@@ -5,6 +5,7 @@ from config import Config
 
 
 def _render_template(filename, first_name):
+    # jinja2 boilerplate
     env = Environment(loader=FileSystemLoader(Config.TEMPLATES_PATH))
     template = env.get_template(filename)
 
