@@ -4,16 +4,21 @@ for communicating with the email daemon.
 
 
 class DataPacket:
-    pass
+    def stream_is_finished(self) -> bool:
+        pass
 
 
 class EmailPacket(DataPacket):
-    def __init__(self, template_name, email_subject, email, first_name):
+    def __init__(self, template_name: str, email_subject: str, email: str, first_name: str):
         self.template_name = template_name
         self.email_subject = email_subject
         self.email = email
         self.first_name = first_name
 
+    def stream_is_finished(self) -> bool:
+        return False
+
 
 class EndOfStreamPacket(DataPacket):
-    pass
+    def stream_is_finished(self):
+        return True
