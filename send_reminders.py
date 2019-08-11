@@ -1,10 +1,8 @@
 """Script that evaluates applicants."""
 from queue import Queue
 
-from feather.email.email_daemon import EmailDaemon
-from feather.quill_dao import QuillDao
-from feather.email import EndOfStreamPacket, EmailPacket
-from feather import UnsubmittedUser
+from feather.email import EmailDaemon, EndOfStreamPacket, EmailPacket
+from feather import UnsubmittedUser, QuillDao
 
 
 def _main() -> None:
@@ -26,10 +24,7 @@ def _main() -> None:
 
     # retrieve users to email
     dao = QuillDao()
-    # unsubmitted_users = dao.get_unsubmitted_users()
-    unsubmitted_users = [
-
-    ]
+    unsubmitted_users = dao.get_unsubmitted_users()
 
     # create and start the email daemon
     message_queue = Queue()  # queue to communicate with email daemon

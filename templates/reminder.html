@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block email_message %}
+    <p>
+        Hi {{ first_name }},
+    </p>
+    <p>
+        We've pushed the HackRice 9 application deadline to <b>August 17</b>!
+        We noticed that you made an account on our registration tool and just
+        wanted to update you. If you want to participate in a weekend full of
+        free food, swag, recruiting, and fun, apply soon! You can find the
+        application <a href="https://hr9-registration.herokuapp.com">here</a>.
+    </p>
+    <p>
+        Please reach out at hack@rice.edu, if you have any questions.
+    </p>
+    <p>
+        Best,<br>
+        The HackRice Team
+    </p>
+{% endblock %}

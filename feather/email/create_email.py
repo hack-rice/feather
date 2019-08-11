@@ -35,7 +35,7 @@ def create_email(filename: str, email_subject: str, to_email: str, first_name: s
     # render html and populate email headers
     mail = MIMEText(_render_template(filename, first_name), "html")
     mail["Subject"] = email_subject
-    mail["From"] = Constants.EMAIL
+    mail["From"] = f"The {Constants.EVENT_NAME} Team"
     mail["To"] = to_email
 
     return mail
