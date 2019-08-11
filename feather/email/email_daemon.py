@@ -8,15 +8,15 @@ import time
 
 from constants import Constants
 from feather.email.create_email import create_email
+from feather.email.data_packet import DataPacket
 
 LOGGER = logging.getLogger(__name__)
 
 
 def _get_server_connection():
     # create and secure server connection
-    context = ssl.create_default_context()
     server = smtplib.SMTP(Constants.EMAIL_HOST, 587)
-    server.starttls(context=context)
+    server.starttls(context=ssl.create_default_context())
 
     # log in to your email
     server.login(Constants.EMAIL, Constants.EMAIL_PASSWORD)
@@ -25,7 +25,7 @@ def _get_server_connection():
 
 class EmailDaemon(Thread):
     """Daemon that coordinates email campaigns."""
-    def __init__(self, queue: Queue) -> None:
+    def __init__(self, queue: "Queue[DataPacket]") -> None:
         super().__init__(daemon=True)
         self._queue = queue
 
@@ -42,8 +42,7 @@ class EmailDaemon(Thread):
         server = _get_server_connection()
 
         while True:
-            # block when the queue is empty
-            data = self._queue.get()
+            data = self._queue.get()  # block when the queue is empty
             if data.stream_is_finished():
                 break
 
@@ -54,6 +53,7 @@ class EmailDaemon(Thread):
                 LOGGER.info(f"Email sent to {data.email}. (template={data.template_name})")
 
                 # sleep so as not to pass the gmail send limit
+                # not doing this will result in a 421, 4.7.0 error from the server
                 time.sleep(2)
 
             except smtplib.SMTPException as e:

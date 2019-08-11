@@ -2,12 +2,16 @@ import csv
 from typing import Iterator
 from os import path
 
-from constants import Constants
 from feather.models import Evaluation
 
 
-class CSVRReader:
+class CSVReader:
     def __init__(self, inbox_path=path.dirname(path.abspath(__file__))):
+        """
+        Init a CSVReader.
+        :param inbox_path: the path to the directory of the files you want read.
+            Defaults to the current directory.
+        """
         self.inbox_path = inbox_path
 
     def read_evaluated_users(self, csv_filename: str) -> Iterator[Evaluation]:
@@ -23,7 +27,7 @@ class CSVRReader:
         :return: a generator of Evaluation objects.
         """
         # configure file path
-        filepath = path.join(Constants.INBOX_PATH, csv_filename)
+        filepath = path.join(self.inbox_path, csv_filename)
 
         with open(filepath, "r") as evaluations_file:
             reader = csv.DictReader(evaluations_file)

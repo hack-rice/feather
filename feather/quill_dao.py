@@ -99,8 +99,8 @@ class QuillDao:
         self._users.find_one_and_update(
             {"email": email},
             {"$set": {
-                "admitted": True,
-                "admittedBy": Constants.EMAIL
+                "status.admitted": True,
+                "status.admittedBy": Constants.EMAIL
             }}
         )
 

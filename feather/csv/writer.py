@@ -12,6 +12,11 @@ LOGGER = logging.getLogger(__name__)
 
 class CSVWriter:
     def __init__(self, outbox_path=path.dirname(path.abspath(__file__))):
+        """
+        Init a CSVWriter.
+        :param outbox_path: the path to the directory where you want created files to
+            be placed. Defaults to the current directory.
+        """
         self.outbox_path = outbox_path
 
     def write_evaluations_to_csv(self, title: str, evaluations: Iterable[Evaluation]) -> None:
@@ -60,7 +65,7 @@ class CSVWriter:
             writer = csv.writer(users_file, quoting=csv.QUOTE_ALL)
 
             # add column headers
-            writer.writerow(["Email", "First Name", "Last Name", "Application Link"])
+            writer.writerow(["email", "first name", "last name", "application link"])
 
             for user in applicants:
                 # this is how quill creates urls for each user
