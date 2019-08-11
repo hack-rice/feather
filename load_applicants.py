@@ -1,10 +1,10 @@
 """Script that loads unevaluated applicants from the database and places them
 in a csv file in the outbox directory.
 """
-from feather.csv.writers import write_users_to_csv
-from feather.quill_dao import QuillDao
+from feather import QuillDao
+from feather.csv import write_applicants_to_csv
 
 
 if __name__ == "__main__":
     dao = QuillDao()
-    write_users_to_csv("applicants", dao.get_unevaluated_applicants())
+    write_applicants_to_csv("applicants", dao.get_applicants())

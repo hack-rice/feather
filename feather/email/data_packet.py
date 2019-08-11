@@ -1,5 +1,5 @@
-"""File that contains the DataPacket classes. These are the objects that will
-be sent to the EmailDaemon.
+"""File that contains DataPacket classes. These objects comprise the API
+for communicating with the email daemon.
 """
 
 
@@ -8,18 +8,11 @@ class DataPacket:
 
 
 class EmailPacket(DataPacket):
-    def __init__(self, template_name, email_subject, email, first_name=None):
+    def __init__(self, template_name, email_subject, email, first_name):
         self.template_name = template_name
         self.email_subject = email_subject
         self.email = email
-        self._first_name = first_name
-
-    @property
-    def first_name(self) -> str:
-        if self._first_name:
-            return self._first_name
-
-        return "Hacker"
+        self.first_name = first_name
 
 
 class EndOfStreamPacket(DataPacket):

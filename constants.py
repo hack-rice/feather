@@ -8,10 +8,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # absolute path of this file
-PATH = path.dirname(path.abspath(__file__))
+_PATH = path.dirname(path.abspath(__file__))
 
 
-class Config:
+class Constants:
     """Class that contains necessary config information."""
     # database info
     MONGODB_URI = os.environ["MONGODB_URI"]
@@ -27,10 +27,10 @@ class Config:
     EVENT_NAME = os.environ["EVENT_NAME"]
 
     # the directory all csv files will be written in
-    OUTBOX_PATH = path.join(PATH, "outbox")
+    OUTBOX_PATH = path.join(_PATH, "outbox")
 
     # the directory all csv files will be read from
-    INBOX_PATH = path.join(PATH, "inbox")
+    INBOX_PATH = path.join(_PATH, "inbox")
 
     # location of the email templates
-    TEMPLATES_PATH = path.join(PATH, "templates")
+    TEMPLATES_PATH = path.join(_PATH, "templates")

@@ -2,11 +2,11 @@ import csv
 from typing import Iterator
 from os import path
 
-from config import Config
+from constants import Constants
 from feather.models import Evaluation
 
 
-def read_evaluations(csv_filename: str) -> Iterator[Evaluation]:
+def read_evaluated_users(csv_filename: str) -> Iterator[Evaluation]:
     """Read evaluations from a csv file and return an iterator of Evaluation
     model objects. Note: this function assumes that the csv file has email,
     first name, and decision columns. These are case sensitive.
@@ -19,7 +19,7 @@ def read_evaluations(csv_filename: str) -> Iterator[Evaluation]:
     :return: a generator of Evaluation objects.
     """
     # configure file path
-    filepath = path.join(Config.INBOX_PATH, csv_filename)
+    filepath = path.join(Constants.INBOX_PATH, csv_filename)
 
     with open(filepath, "r") as evaluations_file:
         reader = csv.DictReader(evaluations_file)

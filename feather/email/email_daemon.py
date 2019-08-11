@@ -5,7 +5,7 @@ import smtplib
 import ssl
 import logging
 
-from config import Config
+from constants import Constants
 from feather.email.data_packet import EndOfStreamPacket
 from feather.email.create_email import create_email
 
@@ -26,8 +26,8 @@ class EmailDaemon(Thread):
 
         # start the server and log in to your email account
         context = ssl.create_default_context()
-        with smtplib.SMTP_SSL(Config.EMAIL_HOST, 465, context=context) as server:
-            server.login(Config.EMAIL, Config.EMAIL_PASSWORD)
+        with smtplib.SMTP_SSL(Constants.EMAIL_HOST, 465, context=context) as server:
+            server.login(Constants.EMAIL, Constants.EMAIL_PASSWORD)
 
             while True:
                 # block when the queue is empty
@@ -38,7 +38,7 @@ class EmailDaemon(Thread):
                 # create and send email
                 mail = create_email(data.template_name, data.email_subject, data.email, data.first_name)
                 server.sendmail(
-                    Config.EMAIL, data.email, mail.as_string()
+                    Constants.EMAIL, data.email, mail.as_string()
                 )
 
                 LOGGER.info(f"Email sent. (name={data.first_name}, email={data.email}, template={data.template_name})")

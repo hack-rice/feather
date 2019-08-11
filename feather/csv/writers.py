@@ -1,20 +1,27 @@
 import csv
 from datetime import datetime
 from os import path
-from typing import Set
+from typing import Iterable
+import logging
 
-from config import Config
-from feather.models import Evaluation
+from constants import Constants
+from feather.models import Evaluation, Applicant
+
+LOGGER = logging.getLogger(__name__)
 
 
-def write_evaluations_to_csv(title: str, evaluations: Set[Evaluation]) -> None:
-    """Write the input users to a csv in the outbox directory.
+def write_evaluations_to_csv(title: str, evaluations: Iterable[Evaluation]) -> None:
+    """Write the input evaluations to a csv in the outbox directory.
 
     EXAMPLE ENTRIES:
         "jsmith@mit.edu","John","waitlist"
         "jdoe@wustl.edu","Jane","accept"
+
+    :param title: the title of the file. (e.g. "applicants", "users", etc.) Do NOT
+        add a file extension to this title.
+    :param evaluations: an iterable of Evaluation model objects.
     """
-    csv_filepath = path.join(Config.OUTBOX_PATH, f"{title}{datetime.now()}.csv")
+    csv_filepath = path.join(Constants.OUTBOX_PATH, f"{title}{datetime.now()}.csv")
 
     # create and populate the csv file
     with open(csv_filepath, "w", newline="") as evals_file:
@@ -29,17 +36,21 @@ def write_evaluations_to_csv(title: str, evaluations: Set[Evaluation]) -> None:
                 [evaluation.email, evaluation.first_name, evaluation.decision]
             )
 
-    print(f"File was created successfully in {Config.OUTBOX_PATH}")
+    LOGGER.info(f"File was created successfully in {Constants.OUTBOX_PATH}.")
 
 
-def write_users_to_csv(title: str, users):
-    """Write the input users to a csv in the outbox directory.
+def write_applicants_to_csv(title: str, applicants: Iterable[Applicant]):
+    """Write the input applicants to a csv in the outbox directory.
 
     EXAMPLE ENTRIES:
         "jsmith@mit.edu","John","Smith","http://example.herokuapp.com/admin/users/abcdefgh"
         "jdoe@wustl.edu","Jane","Doe","http://example.herokuapp.com/admin/users/ijklmnop"
+
+    :param title: the title of the file. (e.g. "applicants", "users", etc.) Do NOT
+        add a file extension to this title.
+    :param applicants: an iterable of Evaluation model objects.
     """
-    csv_filepath = path.join(Config.OUTBOX_PATH, f"{title}{datetime.now()}.csv")
+    csv_filepath = path.join(Constants.OUTBOX_PATH, f"{title}{datetime.now()}.csv")
 
     # create and populate the csv file
     with open(csv_filepath, "w", newline="") as users_file:
@@ -48,13 +59,13 @@ def write_users_to_csv(title: str, users):
         # add column headers
         writer.writerow(["Email", "First Name", "Last Name", "Application Link"])
 
-        for user in users:
+        for user in applicants:
             # this is how quill creates urls for each user
-            application_url = f"{Config.BASE_URL}/admin/users/{user.id}"
+            application_url = f"{Constants.BASE_URL}/admin/users/{user.id}"
 
             # add user info to the csv file
             writer.writerow(
                 [user.email, user.first_name, user.last_name, application_url]
             )
 
-    print(f"File was created successfully in {Config.OUTBOX_PATH}")
+    LOGGER.info(f"File was created successfully in {Constants.OUTBOX_PATH}.")

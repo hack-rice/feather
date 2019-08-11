@@ -1,8 +1,8 @@
 """File that contains the QuillDao class."""
 from typing import Iterator, Tuple
 from pymongo import MongoClient
-from config import Config
-from feather.models import User
+from constants import Constants
+from feather.models import Applicant, UnsubmittedUser
 
 
 def _split_name(name: str) -> Tuple[str, str]:
@@ -20,15 +20,25 @@ def _split_name(name: str) -> Tuple[str, str]:
     return names[0], names[1] if len(names) == 2 else ""
 
 
-def parse_to_user(user_json) -> User:
+def parse_to_applicant(user_json) -> Applicant:
     """Converter method that converts a user json object (as stored in quill's database)
-    into a User model.
+    into an Applicant.
 
     :param user_json: User json object (as stored in quill's database)
-    :return: a User model object
+    :return: a Applicant model object
     """
     first_name, last_name = _split_name(user_json["profile"]["name"])
-    return User(user_json["_id"], user_json["email"], first_name, last_name)
+    return Applicant(user_json["_id"], user_json["email"], first_name, last_name)
+
+
+def parse_to_unsubmitted_user(user_json) -> UnsubmittedUser:
+    """Converter method that converts a user json object (as stored in quill's database)
+    into an UnsubmittedUser.
+
+    :param user_json: User json object (as stored in quill's database)
+    :return: an UnsubmittedUser model object
+    """
+    return UnsubmittedUser(user_json["_id"], user_json["email"])
 
 
 class QuillDao:
@@ -39,28 +49,40 @@ class QuillDao:
     def __init__(self):
         """Initialize a QuillDao."""
         # connect to the database
-        client = MongoClient(Config.MONGODB_URI)
-        db = client[Config.DB_NAME]
+        client = MongoClient(Constants.MONGODB_URI)
+        db = client[Constants.DB_NAME]
 
         # store some collections
         self._users = db["users"]
+
+        # NOTE: this collection will be created if it does not already exist
         self._rejected_users = db["rejected_users"]
 
     # -------------------
     # Read methods
     # -------------------
 
-    def get_unevaluated_applicants(self) -> Iterator[User]:
-        """Getter method for applicants who have been evaluated.
+    def get_applicants(self) -> Iterator[Applicant]:
+        """Getter method for users who have submitted an application but haven't been
+        evaluated.
 
-        :return: an iterator of Users. This evaluates lazily, so the output is about as
-            space efficient as we can hope for.
+        :return: an iterator of SubmittedUsers. This evaluates lazily, so the output is
+            about as space efficient as we can hope for.
         """
-        return (parse_to_user(user_json) for user_json in self._users.find()
+        return (parse_to_applicant(user_json) for user_json in self._users.find()
                 if user_json["status"]["completedProfile"]
                 and not user_json["status"]["admitted"])
 
-    # def get_unsubmitted_applicants(self) -> Iterator[User]:
+    def get_unsubmitted_users(self) -> Iterator[UnsubmittedUser]:
+        """Getter method for users who have registered their account, but haven't
+        submitted an application.
+
+        :return: an iterator of UnsubmittedUsers. This evaluates lazily, so the output is
+            about as space efficient as we can hope for.
+        """
+        return (parse_to_unsubmitted_user(user_json) for user_json in self._users.find()
+                if user_json["verified"]
+                and not user_json["status"]["completedProfile"])
 
     # -------------------
     # Write methods
@@ -78,7 +100,7 @@ class QuillDao:
             {"email": email},
             {"$set": {
                 "admitted": True,
-                "admittedBy": Config.EMAIL
+                "admittedBy": Constants.EMAIL
             }}
         )
 
