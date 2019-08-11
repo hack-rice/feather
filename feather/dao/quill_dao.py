@@ -2,7 +2,6 @@
 from typing import Iterator
 from pymongo import MongoClient
 
-# import feather.dao.converters as converters
 from feather.dao.converters import parse_to_unsubmitted_user, parse_to_applicant
 from feather.models import Applicant, UnsubmittedUser
 
