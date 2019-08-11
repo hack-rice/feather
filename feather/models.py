@@ -14,10 +14,10 @@ class Applicant(NamedTuple):
     """Namedtuple that represents a hackathon user who has
     submitted their application but hasn't yet been evaluated.
     """
-    id: str
     email: str
     first_name: str
     last_name: str
+    profile_link: str
 
 
 class Evaluation(NamedTuple):

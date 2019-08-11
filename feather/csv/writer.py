@@ -65,15 +65,12 @@ class CSVWriter:
             writer = csv.writer(users_file, quoting=csv.QUOTE_ALL)
 
             # add column headers
-            writer.writerow(["email", "first name", "last name", "application link"])
+            writer.writerow(["email", "first name", "last name", "profile link"])
 
             for user in applicants:
-                # this is how quill creates urls for each user
-                application_url = f"{Constants.BASE_URL}/admin/users/{user.id}"
-
                 # add user info to the csv file
                 writer.writerow(
-                    [user.email, user.first_name, user.last_name, application_url]
+                    [user.email, user.first_name, user.last_name, user.profile_link]
                 )
 
         LOGGER.info(f"File was created successfully in {self.outbox_path}.")

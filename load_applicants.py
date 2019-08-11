@@ -7,6 +7,6 @@ from feather.csv import CSVWriter
 
 
 if __name__ == "__main__":
-    dao = QuillDao()
+    dao = QuillDao(Constants.MONGODB_URI, Constants.DB_NAME)
     writer = CSVWriter(Constants.OUTBOX_PATH)
-    writer.write_applicants_to_csv("applicants", dao.get_applicants())
+    writer.write_applicants_to_csv("applicants", dao.get_applicants(Constants.BASE_URL))
