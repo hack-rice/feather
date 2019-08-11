@@ -28,6 +28,9 @@ class EmailDaemon(Thread):
         super().__init__(daemon=True)
         self._queue = queue
 
+        # store packets that aren't delivered
+        self.undelivered_packets = []
+
     def run(self) -> None:
         """Run method for the EmailDaemon. This method listens on self._queue and sends
         an email when ordered to. The daemon will run until it receives an EndOfStreamPacket.
@@ -50,12 +53,16 @@ class EmailDaemon(Thread):
                 LOGGER.info(f"Email sent. "
                             f"(name={data.first_name}, email={data.email}, template={data.template_name})")
 
+                # sleep so as not to pass the gmail send limit
+                time.sleep(2)
+
             except smtplib.SMTPException as e:
                 LOGGER.error("Email failed to send due to an error.")
                 LOGGER.error(e)
+                self.undelivered_packets.append(data)
 
                 # reconnect to server
-                time.sleep(5)
+                time.sleep(30)
                 server = _get_server_connection()
 
         server.quit()  # end the connection
