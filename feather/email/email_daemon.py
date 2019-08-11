@@ -4,12 +4,22 @@ from queue import Queue
 import smtplib
 import ssl
 import logging
+import time
 
 from constants import Constants
 from feather.email.data_packet import EndOfStreamPacket
 from feather.email.create_email import create_email
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _get_server_connection():
+    # start the server and log in to your email account
+    context = ssl.create_default_context()
+    server = smtplib.SMTP(Constants.EMAIL_HOST, 587)
+    server.starttls(context=context)
+    server.login(Constants.EMAIL, Constants.EMAIL_PASSWORD)
+    return server
 
 
 class EmailDaemon(Thread):
@@ -24,23 +34,29 @@ class EmailDaemon(Thread):
         """
         LOGGER.info("The EmailDaemon thread is starting.")
 
-        # start the server and log in to your email account
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL(Constants.EMAIL_HOST, 465, context=context) as server:
-            server.login(Constants.EMAIL, Constants.EMAIL_PASSWORD)
+        # connect to the server
+        server = _get_server_connection()
 
-            while True:
-                # block when the queue is empty
-                data = self._queue.get()
-                if isinstance(data, EndOfStreamPacket):
-                    break
+        while True:
+            # block when the queue is empty
+            data = self._queue.get()
+            if isinstance(data, EndOfStreamPacket):
+                break
 
-                # create and send email
-                mail = create_email(data.template_name, data.email_subject, data.email, data.first_name)
-                server.sendmail(
-                    Constants.EMAIL, data.email, mail.as_string()
-                )
+            # create and send email
+            mail = create_email(data.template_name, data.email_subject, data.email, data.first_name)
+            try:
+                server.sendmail(Constants.EMAIL, data.email, mail.as_string())
+                LOGGER.info(f"Email sent. "
+                            f"(name={data.first_name}, email={data.email}, template={data.template_name})")
 
-                LOGGER.info(f"Email sent. (name={data.first_name}, email={data.email}, template={data.template_name})")
+            except smtplib.SMTPException as e:
+                LOGGER.error("Email failed to send due to an error.")
+                LOGGER.error(e)
 
+                # reconnect to server
+                time.sleep(5)
+                server = _get_server_connection()
+
+        server.quit()  # end the connection
         LOGGER.info("The EmailDaemon thread is finished.")

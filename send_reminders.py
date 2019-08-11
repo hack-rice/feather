@@ -2,7 +2,7 @@
 from queue import Queue
 
 from feather.email import EmailDaemon, EndOfStreamPacket, EmailPacket
-from feather import UnsubmittedUser, QuillDao
+from feather import QuillDao
 
 
 def _main() -> None:
@@ -34,7 +34,7 @@ def _main() -> None:
     # schedule the emails
     for user in unsubmitted_users:
         message_queue.put(
-            EmailPacket("reminder.html", "HackRice Applications Close Soon!", user.email, "Hacker")
+            EmailPacket("reminder.html", "HackRice 9 Application Deadline", user.email, "Hacker")
         )
 
     message_queue.put(EndOfStreamPacket())
