@@ -43,6 +43,9 @@ class CSVWriter:
                     # add evaluation info to the csv file
                     wr.writerow(getattr(obj, attr) for attr in attr_list)
                 except AttributeError as e:
+                    # because we're getting model data via reflection, this error could
+                    # happen very easily
+                    # we don't want it to break the program
                     LOGGER.error("Given attribute was not found on the model object.")
                     LOGGER.error(f"Model object: {obj}.")
                     LOGGER.error(e)

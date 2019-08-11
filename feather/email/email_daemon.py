@@ -15,7 +15,7 @@ LOGGER = logging.getLogger(__name__)
 
 def _get_server_connection():
     # create and secure server connection
-    server = smtplib.SMTP(Constants.EMAIL_HOST, 587)
+    server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls(context=ssl.create_default_context())
 
     # log in to your email
