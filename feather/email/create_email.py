@@ -1,41 +1,54 @@
 """File that contains the necessary functions to create and render an email."""
 from email.mime.text import MIMEText
 from jinja2 import Environment, FileSystemLoader
-from constants import Constants
 
 
-def _render_template(filename: str, first_name: str) -> str:
-    """Render an email template.
+class EmailFactory:
+    def __init__(self, templates_directory_path, from_email, from_name):
+        self.templates_directory_path = templates_directory_path
+        self.from_email = from_email
+        self.from_name = from_name
 
-    :param filename: the filename of the email template. This file MUST be located
-        in the configured templates directory.
-    :param first_name: the first name of the applicant
-    :return: html email string
-    """
-    # jinja2 boilerplate
-    env = Environment(loader=FileSystemLoader(Constants.TEMPLATES_PATH))
-    template = env.get_template(filename)
+    def _render_template(self, filename, first_name) -> str:
+        """Render an email template.
+        :return: html email string
+        """
+        # jinja2 boilerplate
+        env = Environment(loader=FileSystemLoader(self.templates_directory_path))
+        template = env.get_template(filename)
 
-    # render template with jinja2
-    return template.render(first_name=first_name)
+        # render template with jinja2
+        return template.render(first_name=first_name)
+
+    def create_email(self, filename, first_name, email_subject):
+        def contents():
+            return self._render_template(filename, first_name)
+
+        return Email(
+            contents,
+            email_subject,
+            self.from_name
+        )
 
 
-def create_email(filename: str, email_subject: str, to_email: str, first_name: str) -> MIMEText:
-    """
-    Create and return a Mimetext email.
+class Email:
+    def __init__(self, contents, email_subject: str, from_name):
+        self.contents = contents
+        self.email_subject = email_subject
+        self.from_name = from_name
 
-    :param filename: the filename of the email template. This file MUST be located
-        in the configured templates directory.
-    :param email_subject: the subject of the email, as it will be displayed in the
-        receiver's inbox
-    :param to_email: the email address the email will be sent to
-    :param first_name: the first name of the email receiver
-    :return: configured Mimetext email
-    """
-    # render html and populate email headers
-    mail = MIMEText(_render_template(filename, first_name), "html")
-    mail["Subject"] = email_subject
-    mail["From"] = f"The {Constants.EVENT_NAME} Team"
-    mail["To"] = to_email
+    def render(self) -> str:
+        """Create and return a Mimetext email.
+        :return: configured Mimetext email
+        """
+        try:
+            contents = self.contents()
+        except TypeError:
+            contents = self.contents
 
-    return mail
+        # render html and populate email headers
+        mail = MIMEText(contents, "html")
+        mail["Subject"] = self.email_subject
+        mail["From"] = self.from_name
+
+        return mail.as_string()

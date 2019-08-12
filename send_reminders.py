@@ -1,6 +1,7 @@
 """Script that evaluates applicants."""
 from queue import Queue
 
+from constants import Constants
 from feather.email import EmailDaemon, EndOfStreamPacket, EmailPacket
 from feather import QuillDao
 
@@ -23,12 +24,12 @@ def _main() -> None:
         return
 
     # retrieve users to email
-    dao = QuillDao()
+    dao = QuillDao(Constants.MONGODB_URI, Constants.DB_NAME)
     unsubmitted_users = dao.get_unsubmitted_users()
 
     # create and start the email daemon
     message_queue = Queue()  # queue to communicate with email daemon
-    consumer = EmailDaemon(message_queue)
+    consumer = EmailDaemon(Constants.EMAIL, Constants.EMAIL_PASSWORD, message_queue)
     consumer.start()
 
     # schedule the emails

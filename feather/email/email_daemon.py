@@ -6,31 +6,31 @@ import ssl
 import logging
 import time
 
-from constants import Constants
 from feather.email.create_email import create_email
 from feather.email.data_packet import DataPacket
 
 LOGGER = logging.getLogger(__name__)
 
 
-def _get_server_connection():
-    # create and secure server connection
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls(context=ssl.create_default_context())
-
-    # log in to your email
-    server.login(Constants.EMAIL, Constants.EMAIL_PASSWORD)
-    return server
-
-
 class EmailDaemon(Thread):
     """Daemon that coordinates email campaigns."""
-    def __init__(self, queue: "Queue[DataPacket]") -> None:
+    def __init__(self, email_address: str, email_password: str, queue: "Queue[DataPacket]") -> None:
         super().__init__(daemon=True)
+        self._email_address = email_address
+        self._email_password = email_password
         self._queue = queue
 
         # store packets that aren't delivered
         self.undelivered_packets = []
+
+    def _get_server_connection(self):
+        # create and secure server connection
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls(context=ssl.create_default_context())
+
+        # log in to your email
+        server.login(self._email_address, self._email_password)
+        return server
 
     def run(self) -> None:
         """Run method for the EmailDaemon. This method listens on self._queue and sends
@@ -39,7 +39,7 @@ class EmailDaemon(Thread):
         LOGGER.info("The EmailDaemon thread is starting.")
 
         # connect to the server
-        server = _get_server_connection()
+        server = self._get_server_connection()
 
         while True:
             data = self._queue.get()  # block when the queue is empty
@@ -49,7 +49,7 @@ class EmailDaemon(Thread):
             # create and send email
             mail = create_email(data.template_name, data.email_subject, data.email, data.first_name)
             try:
-                server.sendmail(Constants.EMAIL, data.email, mail.as_string())
+                server.sendmail(self._email_address, data.email, mail.as_string())
                 LOGGER.info(f"Email sent to {data.email}. (template={data.template_name})")
 
                 # sleep so as not to pass the gmail send limit
@@ -63,7 +63,7 @@ class EmailDaemon(Thread):
 
                 # reconnect to server
                 time.sleep(30)
-                server = _get_server_connection()
+                server = self._get_server_connection()
 
         server.quit()  # end the connection
         LOGGER.info("The EmailDaemon thread is finished.")
