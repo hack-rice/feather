@@ -16,9 +16,6 @@ class JinjaEmailFactory(EmailFactory):
         self.from_name = from_name
 
     def _render_template(self, filename, first_name) -> str:
-        """Render an email template.
-        :return: html email string
-        """
         # jinja2 boilerplate
         env = Environment(loader=FileSystemLoader(self.templates_directory_path))
         template = env.get_template(filename)
