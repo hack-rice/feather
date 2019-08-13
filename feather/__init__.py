@@ -2,7 +2,7 @@
 import logging
 
 # API imports
-from feather.quill_dao import QuillDao
+from feather.dao import QuillDao
 from feather.models import UnsubmittedUser, Applicant, Evaluation
 
 # Configure the logger

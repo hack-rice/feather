@@ -1,14 +1,27 @@
 """File that contains various model objects."""
-from collections import namedtuple
+from typing import NamedTuple
 
-UnsubmittedUser = namedtuple("UnsubmittedUser", "id email")
-UnsubmittedUser.__doc__ = """Namedtuple that represents a hackathon user who has
-registered their account but hasn't yet submitted their application."""
 
-Applicant = namedtuple("Applicant", "id email first_name last_name")
-Applicant.__doc__ = """Namedtuple that represents a hackathon user who has 
-submitted their application but hasn't yet been evaluated."""
+class UnsubmittedUser(NamedTuple):
+    """Namedtuple that represents a hackathon user who has
+    registered their account but hasn't yet submitted their application.
+    """
+    id: str
+    email: str
 
-Evaluation = namedtuple("Evaluation", "email first_name decision")
-Evaluation.__doc__ = """Namedtuple that represents a hackathon user's 
-evaluation."""
+
+class Applicant(NamedTuple):
+    """Namedtuple that represents a hackathon user who has
+    submitted their application but hasn't yet been evaluated.
+    """
+    email: str
+    first_name: str
+    last_name: str
+    profile_link: str
+
+
+class Evaluation(NamedTuple):
+    """Namedtuple that represents a hackathon user's evaluation."""
+    email: str
+    first_name: str
+    decision: str

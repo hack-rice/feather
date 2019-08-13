@@ -1,44 +1,9 @@
 """File that contains the QuillDao class."""
-from typing import Iterator, Tuple
+from typing import Iterator
 from pymongo import MongoClient
-from constants import Constants
+
+from feather.dao.converters import parse_to_unsubmitted_user, parse_to_applicant
 from feather.models import Applicant, UnsubmittedUser
-
-
-def _split_name(name: str) -> Tuple[str, str]:
-    """
-    Split a name into two pieces--the first name, and everything that follows. If there are
-    no spaces in the input name, the second element in the returned tuple will be the empty
-    string.
-
-    :param name: A person's name (e.g. "John Smith")
-    :return: a 2-tuple with the person's first name as the first element, and everything
-        else in the second element (e.g. tuple("John", "Smith"))
-    """
-    # split into two pieces at the first space
-    names = name.split(" ", maxsplit=1)
-    return names[0], names[1] if len(names) == 2 else ""
-
-
-def parse_to_applicant(user_json) -> Applicant:
-    """Converter method that converts a user json object (as stored in quill's database)
-    into an Applicant.
-
-    :param user_json: User json object (as stored in quill's database)
-    :return: a Applicant model object
-    """
-    first_name, last_name = _split_name(user_json["profile"]["name"])
-    return Applicant(user_json["_id"], user_json["email"], first_name, last_name)
-
-
-def parse_to_unsubmitted_user(user_json) -> UnsubmittedUser:
-    """Converter method that converts a user json object (as stored in quill's database)
-    into an UnsubmittedUser.
-
-    :param user_json: User json object (as stored in quill's database)
-    :return: an UnsubmittedUser model object
-    """
-    return UnsubmittedUser(user_json["_id"], user_json["email"])
 
 
 class QuillDao:
@@ -46,11 +11,11 @@ class QuillDao:
     should be used to interact with the backend database. The database should not be
     directly queried outside of this class.
     """
-    def __init__(self):
+    def __init__(self, mongodb_uri: str, db_name: str) -> None:
         """Initialize a QuillDao."""
         # connect to the database
-        client = MongoClient(Constants.MONGODB_URI)
-        db = client[Constants.DB_NAME]
+        client = MongoClient(mongodb_uri)
+        db = client[db_name]
 
         # store some collections
         self._users = db["users"]
@@ -62,14 +27,17 @@ class QuillDao:
     # Read methods
     # -------------------
 
-    def get_applicants(self) -> Iterator[Applicant]:
+    def get_applicants(self, quill_base_url: str = "YOUR_BASE_URL") -> Iterator[Applicant]:
         """Getter method for users who have submitted an application but haven't been
         evaluated.
 
+        :param quill_base_url: the URL of your quill app (e.g. http://quill.herokuapp.com).
+            Defaults to "YOUR_BASE_URL".
         :return: an iterator of SubmittedUsers. This evaluates lazily, so the output is
             about as space efficient as we can hope for.
         """
-        return (parse_to_applicant(user_json) for user_json in self._users.find()
+        return (parse_to_applicant(user_json, quill_base_url)
+                for user_json in self._users.find()
                 if user_json["status"]["completedProfile"]
                 and not user_json["status"]["admitted"])
 
@@ -80,7 +48,8 @@ class QuillDao:
         :return: an iterator of UnsubmittedUsers. This evaluates lazily, so the output is
             about as space efficient as we can hope for.
         """
-        return (parse_to_unsubmitted_user(user_json) for user_json in self._users.find()
+        return (parse_to_unsubmitted_user(user_json)
+                for user_json in self._users.find()
                 if user_json["verified"]
                 and not user_json["status"]["completedProfile"])
 
@@ -88,19 +57,21 @@ class QuillDao:
     # Write methods
     # -------------------
 
-    def accept_applicant(self, email: str) -> None:
+    def accept_applicant(self, email: str, accepted_by: str = "") -> None:
         """
         Accept an applicant to the hackathon. This function will (a) mark the applicant
         as admitted in the database and (b) note that they were admitted by the user whose
         email is set up in the .env file.
 
         :param email: the email of the applicant to be admitted
+        :param accepted_by: the email of the user who is accepting the applicant. Defaults
+            to the empty string.
         """
         self._users.find_one_and_update(
             {"email": email},
             {"$set": {
-                "admitted": True,
-                "admittedBy": Constants.EMAIL
+                "status.admitted": True,
+                "status.admittedBy": accepted_by
             }}
         )
 
