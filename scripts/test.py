@@ -3,7 +3,7 @@ from queue import Queue
 from threading import Thread
 from typing import Iterable
 
-from constants import Constants
+from scripts.constants import Constants
 from feather.email import EmailDaemon, EndOfStreamPacket, EmailPacket
 from feather.email.email_factory import EmailFactory
 from feather import UnsubmittedUser

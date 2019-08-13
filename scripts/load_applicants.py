@@ -1,7 +1,7 @@
 """Script that loads unevaluated applicants from the database and places them
 in a csv file in the outbox directory.
 """
-from constants import Constants
+from scripts.constants import Constants
 from feather import QuillDao
 from feather.csv import CSVWriter
 

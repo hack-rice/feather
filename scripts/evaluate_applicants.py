@@ -4,7 +4,7 @@ from queue import Queue
 from threading import Thread
 from typing import Iterable
 
-from constants import Constants
+from scripts.constants import Constants
 from feather import Evaluation, QuillDao
 from feather.email import EndOfStreamPacket, EmailPacket, EmailDaemon
 from feather.csv import read_evaluated_users, write_evaluations_to_csv
