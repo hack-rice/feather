@@ -2,10 +2,10 @@ from email.mime.text import MIMEText
 
 
 class Email:
-    def __init__(self, contents, email_subject: str, from_name):
-        self.contents = contents
+    def __init__(self, email_subject: str, from_name: str, contents):
         self.email_subject = email_subject
         self.from_name = from_name
+        self.contents = contents
 
     def render(self) -> str:
         """Create and return a Mimetext email.

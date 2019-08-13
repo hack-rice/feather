@@ -27,4 +27,4 @@ class JinjaEmailFactory(EmailFactory):
         def contents():
             return self._render_template(filename, first_name)
 
-        return Email(contents, email_subject, self.from_name)
+        return Email(email_subject, self.from_name, contents)

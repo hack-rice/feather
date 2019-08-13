@@ -26,8 +26,7 @@ class GmailClient:
         self.undelivered_messages: List[_UndeliveredMessage] = []
 
     def __enter__(self):
-        # do nothing
-        pass
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close_connection()
