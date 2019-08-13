@@ -4,12 +4,14 @@ import logging
 import time
 from typing import List, NamedTuple
 
+from feather.email.email import Email
+
 LOGGER = logging.getLogger(__name__)
 
 
 class _UndeliveredMessage(NamedTuple):
     to_addrs: str
-    msg: str
+    email: Email
 
 
 class GmailClient:
@@ -39,9 +41,9 @@ class GmailClient:
         server.login(self._email_address, self._password)
         return server
 
-    def send_mail(self, to_addrs: str, msg: str):
+    def send_mail(self, to_addrs: str, email: Email):
         try:
-            self._server.sendmail(from_addr=self._email_address, to_addrs=to_addrs, msg=msg)
+            self._server.sendmail(from_addr=self._email_address, to_addrs=to_addrs, msg=email.render())
             LOGGER.info(f"Email sent to {to_addrs}.")
 
             # sleep so as not to pass the gmail send limit when used iteratively
