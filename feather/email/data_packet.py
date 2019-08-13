@@ -2,14 +2,13 @@
 for communicating with the email daemon.
 """
 from abc import ABC, abstractmethod
+from feather.email.email import Email
 
 
 class DataPacket(ABC):
-    def __init__(self, template_name: str, email_subject: str, email: str, first_name: str):
-        self.template_name = template_name
-        self.email_subject = email_subject
+    def __init__(self, to_email: str, email: Email):
+        self.to_email = to_email
         self.email = email
-        self.first_name = first_name
 
     @abstractmethod
     def stream_is_finished(self) -> bool:
@@ -23,7 +22,8 @@ class EmailPacket(DataPacket):
 
 class EndOfStreamPacket(DataPacket):
     def __init__(self):
-        super().__init__("", "", "", "")
+        dummy_email = Email("", "", "")
+        super().__init__("", dummy_email)
 
     def stream_is_finished(self) -> bool:
         return True

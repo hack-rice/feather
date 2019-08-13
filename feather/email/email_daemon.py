@@ -6,7 +6,6 @@ import ssl
 import logging
 import time
 
-from feather.email.create_email import create_email
 from feather.email.data_packet import DataPacket
 
 LOGGER = logging.getLogger(__name__)
@@ -47,17 +46,17 @@ class EmailDaemon(Thread):
                 break
 
             # create and send email
-            mail = create_email(data.template_name, data.email_subject, data.email, data.first_name)
+            mail_contents = data.email.render()
             try:
-                server.sendmail(self._email_address, data.email, mail.as_string())
-                LOGGER.info(f"Email sent to {data.email}. (template={data.template_name})")
+                server.sendmail(from_addr=self._email_address, to_addrs=data.to_email, msg=mail_contents)
+                LOGGER.info(f"Email sent to {data.to_email}.")
 
                 # sleep so as not to pass the gmail send limit
                 # not doing this will result in a 421, 4.7.0 error from the server
                 time.sleep(2)
 
             except smtplib.SMTPException as e:
-                LOGGER.error(f"Email to {data.email} failed to send due to an error.")
+                LOGGER.error(f"Email to {data.to_email} failed to send due to an error.")
                 LOGGER.error(e)
                 self.undelivered_packets.append(data)
 

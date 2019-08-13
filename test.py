@@ -4,8 +4,9 @@ from threading import Thread
 from typing import Iterable
 
 from constants import Constants
-from feather.email import EmailDaemon, EndOfStreamPacket, EmailPacket, EmailFactory
-from feather import QuillDao, UnsubmittedUser
+from feather.email import EmailDaemon, EndOfStreamPacket, EmailPacket
+from feather.email.email_factory import EmailFactory
+from feather import UnsubmittedUser
 
 
 class RemindDaemon(Thread):
@@ -16,14 +17,9 @@ class RemindDaemon(Thread):
         self._email_queue = email_queue
 
     def run(self) -> None:
-        email = self.fac.create_email(
-            filename="reminder.html",
-            first_name="Hacker",
-            email_subject="HackRice 9 Application Deadline"
-        )
-
         # schedule the emails
         for user in self._unsubmitted_users:
+            email = self.fac.create_email("reminder.html", first_name="Hacker", email_subject="Hello!")
             email_packet = EmailPacket(user.email, email)
             self._email_queue.put(email_packet)
 
@@ -36,25 +32,20 @@ def _main() -> None:
     applicants whose decisions couldn't be parsed, create a new csv with only their
     information.
     """
-    # make sure they actually want to do this
-    followup_message = """
-    Are you SURE that you want to do this? Running this script
-    will email all registered users who haven't submitted their
-    application. You cannot undo this.
-
-    Proceed? (y/n): """
-    response = input(followup_message)
-    if response != "y":
-        return
-
     # retrieve users to email
-    dao = QuillDao(Constants.MONGODB_URI, Constants.DB_NAME)
-    unsubmitted_users = dao.get_unsubmitted_users()
+    users = [
+        UnsubmittedUser("", "horeilly1101@gmail.com"),
+        UnsubmittedUser("", "horeilly1101@gmail.com"),
+        UnsubmittedUser("", "horeilly1101@gmail.com"),
+        UnsubmittedUser("", "horeilly1101@gmail.com"),
+        UnsubmittedUser("", "horeilly1101@gmail.com")
+    ]
+    fac = EmailFactory(Constants.TEMPLATES_PATH, Constants.EMAIL, Constants.EVENT_NAME)
 
     # create and start the email daemon
     message_queue = Queue()  # queue to communicate with email daemon
     consumer = EmailDaemon(Constants.EMAIL, Constants.EMAIL_PASSWORD, message_queue)
-    producer = RemindDaemon(unsubmitted_users, message_queue)
+    producer = RemindDaemon(fac, users, message_queue)
 
     consumer.start()
     producer.start()
