@@ -22,7 +22,7 @@ class GmailClient:
         # store a connection to the server
         self._server = self._get_server_connection()
 
-        # store a list of messages that aren't able to be delivered
+        # store a list of messages that weren't able to be delivered
         self.undelivered_messages: List[_UndeliveredMessage] = []
 
     def __enter__(self):
@@ -47,12 +47,12 @@ class GmailClient:
 
             # sleep so as not to pass the gmail send limit when used iteratively
             # not doing this will result in a 421, 4.7.0 error from the server
-            time.sleep(1)
+            time.sleep(2)
 
         except smtplib.SMTPException as e:
             LOGGER.error(f"Email to {to_addrs} failed to send due to an error.")
             LOGGER.error(e)
-            self.undelivered_messages.append(_UndeliveredMessage(to_addrs, msg))
+            self.undelivered_messages.append(_UndeliveredMessage(to_addrs, email))
 
             # pause, then reconnect to server
             time.sleep(30)
