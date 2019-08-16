@@ -2,6 +2,7 @@ from email.mime.text import MIMEText
 
 
 class Email:
+    """Class that represents an email. Can be rendered to an html string."""
     def __init__(self, email_subject: str, from_name: str, contents):
         self.email_subject = email_subject
         self.from_name = from_name

@@ -1,13 +1,10 @@
 """Script that evaluates applicants."""
 import logging
-from queue import Queue
-from threading import Thread
-from typing import Iterable
 
 from scripts.constants import Constants
-from feather import Evaluation, QuillDao
-from feather.email import EndOfStreamPacket, EmailPacket, EmailDaemon
-from feather.csv import read_evaluated_users, write_evaluations_to_csv
+from feather import QuillDao
+from feather.email import GmailClient, JinjaEmailFactory
+from feather.csv import CSVWriter, CSVReader
 
 # Configure the logger
 LOGGER = logging.getLogger(__name__)
@@ -22,62 +19,6 @@ LOGGER.addHandler(handler)
 
 # configure the email subject for all of our emails
 EMAIL_SUBJECT = f"{Constants.EVENT_NAME} Application Decision"
-
-
-class EvaluateDaemon(Thread):
-    """A daemon thread that evaluates hackathon applicants."""
-    def __init__(self, evaluations: Iterable[Evaluation], email_queue: "Queue") -> None:
-        super().__init__(daemon=True)
-        self._evaluations = evaluations
-        self._email_queue = email_queue
-
-        # store evaluations that couldn't be parsed
-        self.unparsed_evaluations = set()
-
-    def run(self) -> None:
-        LOGGER.info("The EvaluateDaemon thread is starting.")
-        dao = QuillDao()
-
-        for evaluation in self._evaluations:
-            # --------------------
-            # update database and queue email
-            # --------------------
-
-            if evaluation.decision == "reject":
-                dao.reject_applicant(evaluation.email)
-                LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been rejected.")
-
-                self._email_queue.put(
-                    EmailPacket("reject.html", EMAIL_SUBJECT, evaluation.email, evaluation.first_name)
-                )
-
-            elif evaluation.decision == "accept":
-                dao.accept_applicant(evaluation.email)
-                LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been accepted.")
-
-                self._email_queue.put(
-                    EmailPacket("accept.html", EMAIL_SUBJECT, evaluation.email, evaluation.first_name)
-                )
-
-            elif evaluation.decision == "waitlist":
-                dao.waitlist_applicant(evaluation.email)
-                LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been waitlisted.")
-
-                self._email_queue.put(
-                    EmailPacket("waitlist.html", EMAIL_SUBJECT, evaluation.email, evaluation.first_name)
-                )
-
-            # --------------------
-            # store unparsed evaluations
-            # --------------------
-
-            else:
-                LOGGER.info(f"Unable to parse {evaluation.first_name}({evaluation.email}).")
-                self.unparsed_evaluations.add(evaluation)
-
-        # signal the email daemon that all emails have been queued
-        self._email_queue.put(EndOfStreamPacket())
-        LOGGER.info("The EvaluateDaemon thread is finished.")
 
 
 def _main() -> None:
@@ -108,24 +49,52 @@ def _main() -> None:
     if response != "y":
         return
 
-    evaluated_users = read_evaluated_users(filename)
+    reader = CSVReader(Constants.INBOX_PATH)
+    evaluations = reader.read_evaluated_users(filename)
 
-    message_queue = Queue()  # queue for the daemons to communicate
-    consumer = EmailDaemon(message_queue)
-    producer = EvaluateDaemon(evaluated_users, message_queue)
+    dao = QuillDao(Constants.MONGODB_URI, Constants.DB_NAME)
+    email_factory = JinjaEmailFactory(Constants.TEMPLATES_PATH, f"The {Constants.EVENT_NAME} Team")
 
-    # start the daemons
-    consumer.start()
-    producer.start()
+    unparsed_evaluations = []
 
-    # wait for evaluations to finish
-    producer.join()
+    with GmailClient(Constants.EMAIL, Constants.EMAIL_PASSWORD) as client:
+        for evaluation in evaluations:
+            # --------------------
+            # update database and queue email
+            # --------------------
 
-    if producer.unparsed_evaluations:
-        write_evaluations_to_csv("unparsed_evals", producer.unparsed_evaluations)
+            if evaluation.decision == "reject":
+                dao.reject_applicant(evaluation.email)
+                LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been rejected.")
 
-    # wait for emails to finish sending
-    consumer.join()
+                email = email_factory.create_email(EMAIL_SUBJECT, "reject.html", evaluation.first_name)
+                client.send_mail(evaluation.email, email)
+
+            elif evaluation.decision == "accept":
+                dao.accept_applicant(evaluation.email)
+                LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been accepted.")
+
+                email = email_factory.create_email(EMAIL_SUBJECT, "accept.html", evaluation.first_name)
+                client.send_mail(evaluation.email, email)
+
+            elif evaluation.decision == "waitlist":
+                dao.waitlist_applicant(evaluation.email)
+                LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been waitlisted.")
+
+                email = email_factory.create_email(EMAIL_SUBJECT, "waitlist.html", evaluation.first_name)
+                client.send_mail(evaluation.email, email)
+
+            # --------------------
+            # store unparsed evaluations
+            # --------------------
+
+            else:
+                LOGGER.info(f"Unable to parse {evaluation.first_name}({evaluation.email}).")
+                unparsed_evaluations.append(evaluation)
+
+    if unparsed_evaluations:
+        writer = CSVWriter(Constants.TEMPLATES_PATH)
+        writer.write_evaluations_to_csv("unparsed_evals", unparsed_evaluations)
 
 
 if __name__ == "__main__":

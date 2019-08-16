@@ -15,7 +15,7 @@ class _UndeliveredMessage(NamedTuple):
 
 
 class GmailClient:
-    def __init__(self, email_address, password):
+    def __init__(self, email_address: str, password: str):
         self._email_address = email_address
         self._password = password
 
@@ -31,7 +31,7 @@ class GmailClient:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close_connection()
 
-    def _get_server_connection(self):
+    def _get_server_connection(self) -> smtplib.SMTP:
         # create and secure server connection
         server = smtplib.SMTP("smtp.gmail.com", 587)
         server.starttls(context=ssl.create_default_context())
@@ -40,7 +40,7 @@ class GmailClient:
         server.login(self._email_address, self._password)
         return server
 
-    def send_mail(self, to_addrs: str, email: Email):
+    def send_mail(self, to_addrs: str, email: Email) -> None:
         try:
             self._server.sendmail(from_addr=self._email_address, to_addrs=to_addrs, msg=email.render())
             LOGGER.info(f"Email sent to {to_addrs}.")
@@ -58,5 +58,5 @@ class GmailClient:
             time.sleep(30)
             self._server = self._get_server_connection()
 
-    def close_connection(self):
+    def close_connection(self) -> None:
         self._server.quit()
