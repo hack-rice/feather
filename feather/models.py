@@ -15,8 +15,10 @@ class Applicant(NamedTuple):
     submitted their application but hasn't yet been evaluated.
     """
     email: str
+    # school: str
     first_name: str
     last_name: str
+    # team: str
     profile_link: str
 
 

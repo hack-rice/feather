@@ -29,11 +29,18 @@ def parse_to_applicant(user_json, quill_base_url: str) -> Applicant:
     :return: a Applicant model object
     """
     first_name, last_name = _split_name(user_json["profile"]["name"])
-    user_id = user_json['_id']
+    user_id = user_json["_id"]
+    school = user_json["profile"]["school"]
+    team = None
 
     # this is how quill creates the profile links
     profile_link = f"{quill_base_url}/admin/users/{user_id}"
-    return Applicant(user_json["email"], first_name, last_name, profile_link)
+    return Applicant(
+        user_json["email"],
+        first_name,
+        last_name,
+        profile_link
+    )
 
 
 def parse_to_unsubmitted_user(user_json) -> UnsubmittedUser:
