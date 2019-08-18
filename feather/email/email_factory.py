@@ -11,11 +11,11 @@ class EmailFactory(ABC):
 
 
 class JinjaEmailFactory(EmailFactory):
-    def __init__(self, templates_directory_path, from_name):
+    def __init__(self, templates_directory_path, from_name: str):
         self.templates_directory_path = templates_directory_path
         self.from_name = from_name
 
-    def _render_template(self, filename, first_name) -> str:
+    def _render_template(self, filename: str, first_name: str) -> str:
         # jinja2 boilerplate
         env = Environment(loader=FileSystemLoader(self.templates_directory_path))
         template = env.get_template(filename)
@@ -23,7 +23,7 @@ class JinjaEmailFactory(EmailFactory):
         # render template with jinja2
         return template.render(first_name=first_name)
 
-    def create_email(self, email_subject, filename, first_name) -> Email:
+    def create_email(self, email_subject: str, filename: str, first_name: str) -> Email:
         def contents():
             return self._render_template(filename, first_name)
 

@@ -40,7 +40,7 @@ class GmailClient:
         server.login(self._email_address, self._password)
         return server
 
-    def send_mail(self, to_addrs: str, email: Email, success_wait_period=2, fail_wait_period=30) -> None:
+    def send_mail(self, to_addrs: str, email: Email, success_wait_period: int = 2, fail_wait_period: int = 30) -> None:
         try:
             self._server.sendmail(from_addr=self._email_address, to_addrs=to_addrs, msg=email.render())
             LOGGER.info(f"Email sent to {to_addrs}.")

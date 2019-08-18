@@ -64,7 +64,7 @@ class CSVWriter:
         :param evaluations: an iterable of Evaluation model objects.
         """
         attr_list = ["email", "first_name", "decision"]
-        return self._write_to_csv(title, evaluations, attr_list)
+        self._write_to_csv(title, evaluations, attr_list)
 
     def write_applicants_to_csv(self, title: str, applicants: Iterable[Applicant]):
         """Write the input applicants to a csv in the outbox directory.
@@ -78,4 +78,4 @@ class CSVWriter:
         :param applicants: an iterable of Evaluation model objects.
         """
         attr_list = ["email", "first_name", "last_name", "profile_link"]
-        return self._write_to_csv(title, applicants, attr_list)
+        self._write_to_csv(title, applicants, attr_list)
