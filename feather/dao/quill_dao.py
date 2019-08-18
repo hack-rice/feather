@@ -36,10 +36,10 @@ class QuillDao:
         :return: an iterator of SubmittedUsers. This evaluates lazily, so the output is
             about as space efficient as we can hope for.
         """
-        return (parse_to_applicant(user_json, quill_base_url)
-                for user_json in self._users.find()
-                if user_json["status"]["completedProfile"]
-                and not user_json["status"]["admitted"])
+        return (
+            parse_to_applicant(user_json, quill_base_url) for user_json in self._users.find()
+            if user_json["status"]["completedProfile"] and not user_json["status"]["admitted"]
+        )
 
     def get_unsubmitted_users(self) -> Iterator[UnsubmittedUser]:
         """Getter method for users who have registered their account, but haven't
@@ -48,10 +48,10 @@ class QuillDao:
         :return: an iterator of UnsubmittedUsers. This evaluates lazily, so the output is
             about as space efficient as we can hope for.
         """
-        return (parse_to_unsubmitted_user(user_json)
-                for user_json in self._users.find()
-                if user_json["verified"]
-                and not user_json["status"]["completedProfile"])
+        return (
+            parse_to_unsubmitted_user(user_json) for user_json in self._users.find()
+            if user_json["verified"] and not user_json["status"]["completedProfile"]
+        )
 
     # -------------------
     # Write methods
