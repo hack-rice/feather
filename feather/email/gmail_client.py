@@ -15,7 +15,7 @@ class _UndeliveredMessage(NamedTuple):
 
 
 class GmailClient:
-    def __init__(self, email_address: str, password: str):
+    def __init__(self, email_address: str, password: str, ):
         self._email_address = email_address
         self._password = password
 
@@ -40,14 +40,14 @@ class GmailClient:
         server.login(self._email_address, self._password)
         return server
 
-    def send_mail(self, to_addrs: str, email: Email) -> None:
+    def send_mail(self, to_addrs: str, email: Email, success_wait_period=2, fail_wait_period=30) -> None:
         try:
             self._server.sendmail(from_addr=self._email_address, to_addrs=to_addrs, msg=email.render())
             LOGGER.info(f"Email sent to {to_addrs}.")
 
             # sleep so as not to pass the gmail send limit when used iteratively
             # not doing this will result in a 421, 4.7.0 error from the server
-            time.sleep(2)
+            time.sleep(success_wait_period)
 
         except smtplib.SMTPException as e:
             LOGGER.error(f"Email to {to_addrs} failed to send due to an error.")
@@ -55,7 +55,7 @@ class GmailClient:
             self.undelivered_messages.append(_UndeliveredMessage(to_addrs, email))
 
             # pause, then reconnect to server
-            time.sleep(30)
+            time.sleep(fail_wait_period)
             self._server = self._get_server_connection()
 
     def close_connection(self) -> None:
