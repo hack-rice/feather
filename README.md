@@ -1,6 +1,8 @@
 # feather
 > IN DEVELOPMENT: a minimalist python API for interacting with the quill registration tool
 
+[![Build Status](https://travis-ci.com/hack-rice/feather.svg?branch=master)](https://travis-ci.com/hack-rice/feather)
+
 [Quill](https://github.com/techx/quill) is amazing. But it wasn't built for HackRice, and there 
 are features we need that it just doesn't provide. Enter Feather.
 
