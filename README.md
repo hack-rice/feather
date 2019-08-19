@@ -22,6 +22,8 @@ This will cover how to run the scripts available in the package. First, go into 
 directory and copy-and-paste `example.env` into a `.env` file. Change the variables as
 necessary to configure your project.
 
+Then, set up the environment and install dependencies.
+
 ```
 # start in the feather/ directory
 python3 -m venv venv
