@@ -3,7 +3,6 @@
 
 [![Build Status](https://travis-ci.com/hack-rice/feather.svg?branch=master)](https://travis-ci.com/hack-rice/feather)
 [![codecov](https://codecov.io/gh/hack-rice/feather/branch/master/graph/badge.svg)](https://codecov.io/gh/hack-rice/feather)
-[![Known Vulnerabilities](https://snyk.io//test/github/hack-rice/feather/badge.svg?targetFile=requirements.txt)](https://snyk.io//test/github/hack-rice/feather?targetFile=requirements.txt)
 
 [Quill](https://github.com/techx/quill) is amazing. But it wasn't built for HackRice, and there 
 are features we need that it just doesn't provide. Enter Feather.
