@@ -51,3 +51,16 @@ been evaluated yet.
 This script will send emails to all of the registered users who haven't completed their application.
 
 `python3 -m scripts.send_reminders`
+
+## Tests
+
+Set up the environment and install dependencies.
+
+```
+# start in the feather/ directory
+python3 -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+```
+
+Then, you can run tests with `python3 -m unittest`.
