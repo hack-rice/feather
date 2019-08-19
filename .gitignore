@@ -1,5 +1,6 @@
 # csv
 *.csv
+build/
 
 # ds store
 .DS_Store

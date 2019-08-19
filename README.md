@@ -7,25 +7,42 @@ are features we need that it just doesn't provide. Enter Feather.
 We use Feather to streamline our application evaluation process, conduct email campaigns, 
 and much more. See below for more details.
 
-## How to get it started
+## API
 
-This all assumes that you have a running version of [Quill](https://github.com/techx/quill) 
-_somewhere_, as that's kind of the point. You'll also need to copy and paste the `example.env`
-file into your own `.env` file in the same directory, changing the environment variables as
-necessary.
-
-Note that `MONGODB_URI` and `DB_NAME` refer to the database quill uses on its backend. If you
-deployed quill with heroku, you can find some of this info in the generated Config Vars and the
-rest by digging around in mLab.
+More thorough documentation is in development. For now, go through the code.
 
 ## Scripts
 
-### evaluate.py
+### How to Get Started
+
+This will cover how to run the scripts available in the package. First, go into the `scripts`
+directory and copy-and-paste `example.env` into a `.env` file. Change the variables as
+necessary to configure your project.
+
+```
+# start in the feather/ directory
+python3 -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+```
+
+### evaluate_applicants.py
 
 This script will let you accept, reject, and waitlist applicants by uploading a csv with necessary
 information on each applicant.
+
+`python3 -m scripts.evaluate_applicants`
 
 ### load_applicants.py
 
 This script will load a csv with necessary information on submitted users whose applications haven't
 been evaluated yet.
+
+`python3 -m scripts.load_applicants`
+
+
+### send_reminders.py
+
+This script will send emails to all of the registered users who haven't completed their application.
+
+`python3 -m scripts.send_reminders`
