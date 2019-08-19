@@ -12,7 +12,5 @@ setup(
     url='https://github.com/hack-rice/feather',
     description='A minimalist API for interacting with the quill registration tool.',
     packages=['feather', 'feather.email', 'feather.csv'],
-    install_requires=['python-dotenv'],
-    tests_require=["pymongo"],
     test_suite="tests",
 )
