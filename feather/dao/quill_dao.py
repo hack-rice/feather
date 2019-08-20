@@ -61,42 +61,6 @@ class QuillDao:
             if user_json["verified"] and not user_json["status"]["completedProfile"]
         )
 
-    def get_teams(self):
-        teams = defaultdict(list)
-        for user in self._users.find():
-            if user["status"]["completedProfile"]:
-                if "teamCode" in user and user["status"]["admitted"]:
-                    teams[user["teamCode"]].append(
-                        _TeamMember(
-                            user["email"],
-                            user["profile"]["name"],
-                            user["teamCode"],
-                            "ADMITTED"
-                        )
-                    )
-                elif "teamCode"in user:
-                    teams[user["teamCode"]].append(
-                        _TeamMember(
-                            user["email"],
-                            user["profile"]["name"],
-                            user["teamCode"],
-                            "not yet decided"
-                        )
-                    )
-
-        for user in self._rejected_users.find():
-            if "teamCode" in user:
-                teams[user["teamCode"]].append(
-                    _TeamMember(
-                        user["email"],
-                        user["profile"]["name"],
-                        user["teamCode"],
-                        "REJECTED"
-                    )
-                )
-
-        return teams
-
     # -------------------
     # Write methods
     # -------------------
@@ -141,4 +105,3 @@ class QuillDao:
         :param email: the email of the applicant to be rejected.
         """
         # do nothing
-        pass

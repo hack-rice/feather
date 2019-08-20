@@ -94,7 +94,7 @@ _TEST_REJECTED_USERS = [
 ]
 
 
-class MockQuillDao(QuillDao):
+class _MockQuillDao(QuillDao):
     def __init__(self):
         # don't call super!
         # we don't want to touch the MongoClient when testing
@@ -108,7 +108,7 @@ class MockQuillDao(QuillDao):
 class TestQuillDao(unittest.TestCase):
     """Unit test suite for the QuillDao."""
     def test_get_applicants(self):
-        dao = MockQuillDao()
+        dao = _MockQuillDao()
         applicants = list(dao.get_applicants("http://example.com"))  # convert iterator to list
         self.assertEqual(2, len(applicants))
 
@@ -122,8 +122,8 @@ class TestQuillDao(unittest.TestCase):
         self.assertEqual("http://example.com/admin/users/ghj564", second_applicant.profile_link)
 
     def test_get_unsubmitted_users(self):
-        dao = MockQuillDao()
-        unsubmitted_users = list(dao.get_unsubmitted_users())
+        dao = _MockQuillDao()
+        unsubmitted_users = list(dao.get_unsubmitted_users())  # convert iterator to list
         self.assertEqual(1, len(unsubmitted_users))
 
         first_unsubmitted_user = unsubmitted_users[0]
