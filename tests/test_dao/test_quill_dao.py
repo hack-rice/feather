@@ -22,10 +22,6 @@ _TEST_USERS = [
         "_id": "def456",
         "email": "hjo2@rice.edu",
         "verified": True,
-        "profile": {
-            "name": "Hugh Joseph O'Reilly",
-            "school": "Rice University"
-        },
         "status": {
             "completedProfile": False,
             "admitted": False
@@ -78,7 +74,8 @@ _TEST_REJECTED_USERS = [
             "school": "Massachusetts Institute of Technology"
         },
         "status": {
-            "completedProfile": True
+            "completedProfile": True,
+            "admitted": False
         }
     },
     {
@@ -90,7 +87,8 @@ _TEST_REJECTED_USERS = [
             "school": "Washington University in St. Louis"
         },
         "status": {
-            "completedProfile": True
+            "completedProfile": True,
+            "admitted": False
         }
     },
 ]
@@ -118,3 +116,15 @@ class TestQuillDao(unittest.TestCase):
         self.assertEqual("John", first_applicant.first_name)
         self.assertEqual("John John Doe", first_applicant.last_name)
         self.assertEqual("john@mit.edu", first_applicant.email)
+
+        second_applicant = applicants[1]
+        self.assertEqual("Keshav", second_applicant.first_name)
+        self.assertEqual("http://example.com/admin/users/ghj564", second_applicant.profile_link)
+
+    def test_get_unsubmitted_users(self):
+        dao = MockQuillDao()
+        unsubmitted_users = list(dao.get_unsubmitted_users())
+        self.assertEqual(1, len(unsubmitted_users))
+
+        first_unsubmitted_user = unsubmitted_users[0]
+        self.assertEqual("hjo2@rice.edu", first_unsubmitted_user.email)
