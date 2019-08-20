@@ -1,9 +1,17 @@
 """File that contains the QuillDao class."""
-from typing import Iterator
+from typing import Iterator, NamedTuple
+from collections import defaultdict
 from pymongo import MongoClient
 
 from feather.dao.converters import parse_to_unsubmitted_user, parse_to_applicant
 from feather.models import Applicant, UnsubmittedUser
+
+
+class _TeamMember(NamedTuple):
+    email: str
+    name: str
+    team: str
+    status: str
 
 
 class QuillDao:
@@ -52,6 +60,42 @@ class QuillDao:
             parse_to_unsubmitted_user(user_json) for user_json in self._users.find()
             if user_json["verified"] and not user_json["status"]["completedProfile"]
         )
+
+    def get_teams(self):
+        teams = defaultdict(list)
+        for user in self._users.find():
+            if user["status"]["completedProfile"]:
+                if "teamCode" in user and user["status"]["admitted"]:
+                    teams[user["teamCode"]].append(
+                        _TeamMember(
+                            user["email"],
+                            user["profile"]["name"],
+                            user["teamCode"],
+                            "ADMITTED"
+                        )
+                    )
+                elif "teamCode"in user:
+                    teams[user["teamCode"]].append(
+                        _TeamMember(
+                            user["email"],
+                            user["profile"]["name"],
+                            user["teamCode"],
+                            "not yet decided"
+                        )
+                    )
+
+        for user in self._rejected_users.find():
+            if "teamCode" in user:
+                teams[user["teamCode"]].append(
+                    _TeamMember(
+                        user["email"],
+                        user["profile"]["name"],
+                        user["teamCode"],
+                        "REJECTED"
+                    )
+                )
+
+        return teams
 
     # -------------------
     # Write methods
