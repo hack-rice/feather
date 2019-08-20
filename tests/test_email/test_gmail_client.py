@@ -12,6 +12,7 @@ class _SuccessfulGmailClient(GmailClient):
         def sendmail(from_addr, to_addrs, msg):
             pass
         server.sendmail = sendmail
+        server.quit = lambda: None  # no op
 
         return server
 
@@ -23,6 +24,7 @@ class _UnsuccessfulGmailClient(GmailClient):
         def sendmail(from_addr, to_addrs, msg):
             raise smtplib.SMTPRecipientsRefused(None)
         server.sendmail = sendmail
+        server.quit = lambda: None  # no op
 
         return server
 
@@ -56,3 +58,14 @@ class TestGmailClient(unittest.TestCase):
             )
 
         self.assertEqual(1, len(client.undelivered_messages))
+
+    def test_context_manager(self):
+        with _UnsuccessfulGmailClient("fake@gmail.com", "XxhackricexX") as client:
+            client.send_mail(
+                "hack@rice.edu",
+                Email("Hello", "HR", "<>"),
+                success_wait_period=0,
+                fail_wait_period=0
+            )
+
+            self.assertEqual(1, len(client.undelivered_messages))

@@ -31,7 +31,11 @@ def parse_to_applicant(user_json, quill_base_url: str) -> Applicant:
     first_name, last_name = _split_name(user_json["profile"]["name"])
     user_id = user_json["_id"]
     school = user_json["profile"]["school"]
-    team = None
+
+    if "teamCode" in user_json:
+        team = user_json["teamCode"]
+    else:
+        team = None
 
     # this is how quill creates the profile links
     profile_link = f"{quill_base_url}/admin/users/{user_id}"

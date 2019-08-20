@@ -1,17 +1,9 @@
 """File that contains the QuillDao class."""
-from typing import Iterator, NamedTuple
-from collections import defaultdict
+from typing import Iterator
 from pymongo import MongoClient
 
 from feather.dao.converters import parse_to_unsubmitted_user, parse_to_applicant
 from feather.models import Applicant, UnsubmittedUser
-
-
-class _TeamMember(NamedTuple):
-    email: str
-    name: str
-    team: str
-    status: str
 
 
 class QuillDao:
