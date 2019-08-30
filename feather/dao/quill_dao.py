@@ -58,6 +58,9 @@ class QuillDao:
         user = self._users.find_one({"email": email})
         if user:
             return dict(user)
+        rejected_user = self._rejected_users.find_one({"email": email})
+        if rejected_user:
+            return dict(rejected_user)
         raise ValueError("User not found!")
 
     # -------------------
