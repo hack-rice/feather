@@ -55,7 +55,10 @@ class QuillDao:
         )
 
     def get_user_json(self, email: str) -> Iterator[str]:
-        return dict(self._users.find_one({"email": email}))
+        user = self._users.find_one({"email": email})
+        if user:
+            return dict(user)
+        raise ValueError("User not found!")
 
     # -------------------
     # Write methods
