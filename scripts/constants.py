@@ -1,5 +1,4 @@
 """File that contains necessary config information for the project."""
-
 import os
 from os import path
 
@@ -16,15 +15,14 @@ class Constants:
     # database info
     MONGODB_URI = os.environ["MONGODB_URI"]
     DB_NAME = os.environ["DB_NAME"]
-    BASE_URL = os.environ["BASE_URL"]
 
     # email info
     EMAIL = os.environ["EMAIL"]
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
-    EMAIL_HOST = os.environ["EMAIL_HOST"]
 
-    # the name of the event
+    # event info
     EVENT_NAME = os.environ["EVENT_NAME"]
+    BASE_URL = os.environ["BASE_URL"]
 
     # the directory all csv files will be written in
     OUTBOX_PATH = path.join(_PATH, "outbox")

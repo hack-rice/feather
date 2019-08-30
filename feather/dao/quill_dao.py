@@ -1,6 +1,7 @@
 """File that contains the QuillDao class."""
 from typing import Iterator
 from pymongo import MongoClient
+from pprint import pprint
 
 from feather.dao.converters import parse_to_unsubmitted_user, parse_to_applicant
 from feather.models import Applicant, UnsubmittedUser
@@ -52,6 +53,9 @@ class QuillDao:
             parse_to_unsubmitted_user(user_json) for user_json in self._users.find()
             if user_json["verified"] and not user_json["status"]["completedProfile"]
         )
+
+    def get_user_json(self, email: str) -> Iterator[str]:
+        return dict(self._users.find_one({"email": email}))
 
     # -------------------
     # Write methods

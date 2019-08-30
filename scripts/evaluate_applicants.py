@@ -42,8 +42,8 @@ def _main() -> None:
     followup_message = """
     Are you SURE that you want to do this? Running this script
     will update the applicants' profiles in the database and
-    email them with their decisions. 
-    
+    email them with their decisions.
+
     Proceed? (y/n): """
     response = input(followup_message)
     if response != "y":
@@ -63,21 +63,21 @@ def _main() -> None:
             # update database and queue email
             # --------------------
 
-            if evaluation.decision == "reject":
+            if evaluation.decision == "Reject":
                 dao.reject_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been rejected.")
 
                 email = email_factory.create_email(EMAIL_SUBJECT, "reject.html", evaluation.first_name)
                 client.send_mail(evaluation.email, email)
 
-            elif evaluation.decision == "accept":
+            if evaluation.decision == "Accept":
                 dao.accept_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been accepted.")
 
                 email = email_factory.create_email(EMAIL_SUBJECT, "accept.html", evaluation.first_name)
                 client.send_mail(evaluation.email, email)
 
-            elif evaluation.decision == "waitlist":
+            elif evaluation.decision == "Waitlist":
                 dao.waitlist_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been waitlisted.")
 
@@ -89,11 +89,11 @@ def _main() -> None:
             # --------------------
 
             else:
-                LOGGER.info(f"Unable to parse {evaluation.first_name}({evaluation.email}).")
+                LOGGER.error(f"Unable to parse {evaluation.first_name}({evaluation.email}).")
                 unparsed_evaluations.append(evaluation)
 
     if unparsed_evaluations:
-        writer = CSVWriter(Constants.TEMPLATES_PATH)
+        writer = CSVWriter(Constants.OUTBOX_PATH)
         writer.write_evaluations_to_csv("unparsed_evals", unparsed_evaluations)
 
 
