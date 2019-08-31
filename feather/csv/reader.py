@@ -34,6 +34,6 @@ class CSVReader:
             for row in reader:
                 yield Evaluation(
                     row["email"],
-                    row["first name"],
+                    row["first_name"],
                     row["decision"]
                 )

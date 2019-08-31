@@ -1,7 +1,6 @@
 """File that contains the QuillDao class."""
 from typing import Iterator
 from pymongo import MongoClient
-from pprint import pprint
 
 from feather.dao.converters import parse_to_unsubmitted_user, parse_to_applicant
 from feather.models import Applicant, UnsubmittedUser
@@ -55,13 +54,20 @@ class QuillDao:
         )
 
     def get_user_json(self, email: str) -> Iterator[str]:
+        """
+        Return a user's json object. Returns None if no user is found.
+        :param email: user's email
+        :return: user json string
+        """
         user = self._users.find_one({"email": email})
         if user:
             return dict(user)
+
         rejected_user = self._rejected_users.find_one({"email": email})
         if rejected_user:
             return dict(rejected_user)
-        raise ValueError("User not found!")
+
+        return None
 
     # -------------------
     # Write methods
