@@ -53,7 +53,7 @@ class QuillDao:
             if user_json["verified"] and not user_json["status"]["completedProfile"]
         )
 
-    def get_user_json(self, email: str) -> Iterator[str]:
+    def get_user_json(self, email: str) -> dict:
         """
         Return a user's json object. Returns None if no user is found.
         :param email: user's email

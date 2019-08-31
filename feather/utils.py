@@ -1,14 +1,21 @@
 
 class Normalizer:
     """A class that normalizes strings, so that we can quickly tell if an
-    input that hasn't been normalized is valid.
+    input that hasn't been normalized is valid. This allows to enforce
+    case insensitivity and relax whitespace requirements.
 
     For example, we want to accept "Accept" as being equal to "accept". This
     class abstracts some of that ugliness away. (Note: in this example, "accept"
-    is considered the normalized string.
+    is considered the normalized string.)
     """
     @staticmethod
     def _normalize(word: str) -> str:
+        """
+        Remove all white space from the input string and convert all characters
+        to lower case.
+        :param word: input string
+        :return: normalized string
+        """
         # remove white space from input word and make all characters lower case
         # this is how we describe a normalized word
         return "".join(section.strip().lower() for section in word.split())
