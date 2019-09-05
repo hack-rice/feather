@@ -19,7 +19,7 @@ def _main() -> None:
         for user in confirmed_users:
             email = email_factory.create_email(
                 email_subject="HackRice 9 Event Details",
-                filename="reminder.html",
+                filename="confirm.html",
                 first_name=user.first_name,
                 to_email=user.email
             )
