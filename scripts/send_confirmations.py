@@ -2,30 +2,13 @@
 from feather import QuillDao
 from scripts.constants import Constants
 from feather.email import JinjaEmailFactory, GmailClient
-from feather import UnsubmittedUser
 
 
 def _main() -> None:
-    """Main function. (1) Asks the user for the name of a csv that contains applicant
-    decisions. (2) Evaluates the applicants accordingly. (3) If there are any
-    applicants whose decisions couldn't be parsed, create a new csv with only their
-    information.
-    """
-    # make sure they actually want to do this
-    followup_message = """
-    Are you SURE that you want to do this? Running this script
-    will email all registered users who haven't submitted their
-    application. You cannot undo this.
-
-    Proceed? (y/n): """
-    response = input(followup_message)
-    if response != "y":
-        return
-
+    """Main function."""
     # retrieve users to email
     dao = QuillDao(Constants.MONGODB_URI, Constants.DB_NAME)
-    # unsubmitted_users = dao.get_unsubmitted_users()
-    unsubmitted_users = [UnsubmittedUser("", "hjo2@rice.edu")]
+    confirmed_users = dao.get_confirmed_users()
 
     email_factory = JinjaEmailFactory(
         templates_directory_path=Constants.TEMPLATES_PATH,
@@ -33,11 +16,11 @@ def _main() -> None:
     )
 
     with GmailClient(Constants.EMAIL, Constants.EMAIL_PASSWORD) as client:
-        for user in unsubmitted_users:
+        for user in confirmed_users:
             email = email_factory.create_email(
-                email_subject="HackRice 9 Application Deadline",
+                email_subject="HackRice 9 Event Details",
                 filename="reminder.html",
-                first_name="Hacker",
+                first_name=user.first_name,
                 to_email=user.email
             )
             client.send_mail(user.email, email)
