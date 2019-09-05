@@ -37,7 +37,7 @@ class TestGmailClient(unittest.TestCase):
         with self.assertLogs(level="INFO") as cm:
             client.send_mail(
                 "hack@rice.edu",
-                Email("Hello", "HR", "<>"),
+                Email("Hello", "HR", "", "<>"),
                 success_wait_period=0,
                 fail_wait_period=0
             )
@@ -52,7 +52,7 @@ class TestGmailClient(unittest.TestCase):
         with self.assertLogs(level="ERROR"):
             client.send_mail(
                 "hack@rice.edu",
-                Email("Hello", "HR", "<>"),
+                Email("Hello", "HR", "", "<>"),
                 success_wait_period=0,
                 fail_wait_period=0
             )
@@ -63,7 +63,7 @@ class TestGmailClient(unittest.TestCase):
         with _UnsuccessfulGmailClient("fake@gmail.com", "XxhackricexX") as client:
             client.send_mail(
                 "hack@rice.edu",
-                Email("Hello", "HR", "<>"),
+                Email("Hello", "HR", "", "<>"),
                 success_wait_period=0,
                 fail_wait_period=0
             )
