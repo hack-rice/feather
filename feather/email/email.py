@@ -3,9 +3,10 @@ from email.mime.text import MIMEText
 
 class Email:
     """Class that represents an email. Can be rendered to an html string."""
-    def __init__(self, email_subject: str, from_name: str, contents):
+    def __init__(self, email_subject: str, from_name: str, to_email: str, contents):
         self.email_subject = email_subject
         self.from_name = from_name
+        self.to_email = to_email
         self.contents = contents
 
     def render(self) -> str:
@@ -21,5 +22,6 @@ class Email:
         mail = MIMEText(contents, "html")
         mail["Subject"] = self.email_subject
         mail["From"] = self.from_name
+        mail["To"] = self.to_email
 
         return mail.as_string()

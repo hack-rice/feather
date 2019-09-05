@@ -29,22 +29,22 @@ def _main() -> None:
     """
     # get the csv filename from the user
     file_message = """
-    Please input the name of the csv in inbox (e.g. evals.csv).
-    Remember that this file MUST have email, first name, and
-    decision columns. Of course, email must be a valid email
-    address, and decision must be either accept, reject, or
-    waitlist. These are all case sensitive.
+        Please input the name of the csv in inbox (e.g. evals.csv).
+        Remember that this file MUST have email, first name, and
+        decision columns. Of course, email must be a valid email
+        address, and decision must be either accept, reject, or
+        waitlist. These are all case sensitive.
 
-    Filename: """
+        Filename: """
     filename = input(file_message)
 
     # make sure they actually want to do this
     followup_message = """
-    Are you SURE that you want to do this? Running this script
-    will update the applicants' profiles in the database and
-    email them with their decisions.
+        Are you SURE that you want to do this? Running this script
+        will update the applicants' profiles in the database and
+        email them with their decisions.
 
-    Proceed? (y/n): """
+        Proceed? (y/n): """
     response = input(followup_message)
     if response != "y":
         return
@@ -55,6 +55,7 @@ def _main() -> None:
     dao = QuillDao(Constants.MONGODB_URI, Constants.DB_NAME)
     email_factory = JinjaEmailFactory(Constants.TEMPLATES_PATH, f"The {Constants.EVENT_NAME} Team")
 
+    # keep track of evaluations that couldn't be parsed
     unparsed_evaluations = []
 
     with GmailClient(Constants.EMAIL, Constants.EMAIL_PASSWORD) as client:

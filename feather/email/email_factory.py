@@ -23,8 +23,8 @@ class JinjaEmailFactory(EmailFactory):
         # render template with jinja2
         return template.render(first_name=first_name)
 
-    def create_email(self, email_subject: str, filename: str, first_name: str) -> Email:
+    def create_email(self, email_subject: str, filename: str, first_name: str, to_email: str) -> Email:
         def contents():
             return self._render_template(filename, first_name)
 
-        return Email(email_subject, self.from_name, contents)
+        return Email(email_subject, self.from_name, to_email, contents)

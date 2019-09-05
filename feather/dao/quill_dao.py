@@ -69,6 +69,12 @@ class QuillDao:
 
         return None
 
+    def get_confirmed_users(self, quill_base_url="") -> Iterator[Applicant]:
+        return (
+            parse_to_applicant(user_json, quill_base_url) for user_json in self._users.find()
+            if user_json["status"]["confirmed"]
+        )
+
     # -------------------
     # Write methods
     # -------------------
