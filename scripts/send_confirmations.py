@@ -18,7 +18,7 @@ def _main() -> None:
     with GmailClient(Constants.EMAIL, Constants.EMAIL_PASSWORD) as client:
         for user in confirmed_users:
             email = email_factory.create_email(
-                email_subject="HackRice 9 Event Details",
+                email_subject="HackRice 9 Is This Friday!",
                 filename="confirm.html",
                 first_name=user.first_name,
                 to_email=user.email
