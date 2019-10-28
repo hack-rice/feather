@@ -2,7 +2,7 @@ import csv
 from typing import Iterator
 from os import path
 
-from feather.models import Evaluation
+from feather.models import Evaluation, Reimbursement
 
 
 class CSVReader:
@@ -36,4 +36,17 @@ class CSVReader:
                     row["email"],
                     row["first_name"],
                     row["decision"]
+                )
+
+    def read_reimbursements(self, csv_filename: str) -> Iterator[Reimbursement]:
+        filepath = path.join(self.inbox_path, csv_filename)
+
+        with open(filepath, "r") as evaluations_file:
+            reader = csv.DictReader(evaluations_file)
+            for row in reader:
+                yield Reimbursement(
+                    row["Email"],
+                    row["First Name"],
+                    row["Address"],
+                    row["Amount"]
                 )

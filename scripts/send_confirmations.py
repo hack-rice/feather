@@ -9,7 +9,6 @@ def _main() -> None:
     # retrieve users to email
     dao = QuillDao(Constants.MONGODB_URI, Constants.DB_NAME)
     confirmed_users = dao.get_confirmed_users()
-    # confirmed_users = [Applicant("hjo2@rice.edu", "Hugh", None, None)]
 
     email_factory = JinjaEmailFactory(
         templates_directory_path=Constants.TEMPLATES_PATH,

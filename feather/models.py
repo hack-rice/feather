@@ -27,3 +27,11 @@ class Evaluation(NamedTuple):
     email: str
     first_name: str
     decision: str
+
+
+class Reimbursement(NamedTuple):
+    """Namedtuple that represents a hackathon user's reimbursement info."""
+    email: str
+    first_name: str
+    address: str
+    amount: str

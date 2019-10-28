@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block email_message %}
+    <p>
+        Hi {{ first_name }},
+    </p>
+    <p>
+        We have an update on your travel reimbursements! We apologize for
+        the delay, but this email means that we've received your receipts
+        and are ready to begin the reimbursement process.
+    </p>
+    <p>
+        The first step is to fill out our
+        <a href="https://payables.rice.edu/index.cfm?p=app.external">
+            reimbursement form.
+        </a>
+        The form should not ask you to submit a W9, but if it does, please
+        submit a blank piece of paper. A W9 is not required for travel
+        reimbursement.
+    </p>
+    <p>
+        Finally, we want to double check some details with you. Our records
+        show that you qualify for {{ amount }} in travel reimbursement, and
+        that your address is {{ address }}. If either of those details is
+        incorrect, please review our reimbursement policy in the registration
+        tool and then let us know.
+    </p>
+    <p>
+        If you have any questions, please reach out at hack@rice.edu.
+    </p>
+    <p>
+        Best,<br>
+        The HackRice Team
+    </p>
+{% endblock %}
