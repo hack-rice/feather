@@ -1,4 +1,4 @@
-"""Script that evaluates applicants."""
+"""Script that updates applicants on reimbursement."""
 import logging
 
 from scripts.constants import Constants
