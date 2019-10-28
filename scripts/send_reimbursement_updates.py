@@ -4,6 +4,7 @@ import logging
 from scripts.constants import Constants
 from feather.email import GmailClient, JinjaEmailFactory
 from feather.csv import CSVReader
+from feather.models import Reimbursement
 
 # Configure the logger
 LOGGER = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ def _main() -> None:
 
     reader = CSVReader(Constants.INBOX_PATH)
     reimbursements = reader.read_reimbursements(filename)
+    # reimbursements = [Reimbursement("hjo2@rice.edu", "Hugh", "12848 Westgate St", "$5")]
 
     email_factory = JinjaEmailFactory(Constants.TEMPLATES_PATH, f"The {Constants.EVENT_NAME} Team")
 
@@ -40,7 +42,7 @@ def _main() -> None:
         for reimbursement in reimbursements:
             email = email_factory.create_email(
                 EMAIL_SUBJECT,
-                filename,
+                "reimbursements.html",
                 reimbursement.email,
                 first_name=reimbursement.first_name,
                 address=reimbursement.address,
