@@ -11,8 +11,10 @@ class Email:
 
     def render(self) -> str:
         """Create and return a Mimetext email.
-        :return: configured Mimetext email
+        :return: rendered Mimetext email
         """
+        # for flexibility, we're allowing contents to be a string, or
+        # a callable that returns a string
         try:
             contents = self.contents()
         except TypeError:

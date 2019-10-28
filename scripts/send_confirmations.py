@@ -21,8 +21,8 @@ def _main() -> None:
             email = email_factory.create_email(
                 email_subject="HackRice: A Message from our Sponsors",
                 filename="confirm.html",
-                first_name=user.first_name,
-                to_email=user.email
+                to_email=user.email,
+                first_name=user.first_name
             )
             client.send_mail(user.email, email)
 

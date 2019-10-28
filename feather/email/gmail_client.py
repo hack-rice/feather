@@ -32,7 +32,7 @@ class GmailClient:
         self.close_connection()
 
     def _get_server_connection(self) -> smtplib.SMTP:
-        # create and secure server connection
+        # create and secure a server connection
         server = smtplib.SMTP("smtp.gmail.com", 587)
         server.starttls(context=ssl.create_default_context())
 

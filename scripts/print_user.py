@@ -1,4 +1,4 @@
-
+"""Script that prints a user's entry in the database."""
 from pprint import pprint
 from feather import QuillDao
 from scripts.constants import Constants

@@ -30,15 +30,15 @@ def _main() -> None:
         from_name=f"The {Constants.EVENT_NAME} Team"
     )
 
-    # we want to send everyone the same email
-    email = email_factory.create_email(
-        email_subject="HackRice 9 Application Deadline",
-        filename="reminder.html",
-        first_name="Hacker"
-    )
-
     with GmailClient(Constants.EMAIL, Constants.EMAIL_PASSWORD) as client:
         for user in unsubmitted_users:
+            email = email_factory.create_email(
+                email_subject="HackRice 9 Application Deadline",
+                filename="reminder.html",
+                to_email=user.email,
+                first_name="Hacker"
+            )
+
             client.send_mail(user.email, email)
 
 
