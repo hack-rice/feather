@@ -1,10 +1,10 @@
-"""Test for the GmailClient."""
+"""Test for the JinjaEmailFactory."""
 import unittest
 import os.path as path
 from feather.email import JinjaEmailFactory
 
 
-class TestGmailClient(unittest.TestCase):
+class TestJinjaEmailFactory(unittest.TestCase):
     """Unit test suite for the GmailClient."""
     def test_jinja_email_factory(self):
         fac = JinjaEmailFactory(path.dirname(path.abspath(__file__)), "HR Team")

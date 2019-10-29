@@ -1,3 +1,5 @@
+"""File that contains the Normalizer class."""
+
 
 class Normalizer:
     """A class that normalizes strings, so that we can quickly tell if an
@@ -32,3 +34,12 @@ class Normalizer:
         """
         normalized_word = self._normalize(word)
         return normalized_word in self._words
+
+
+# ------------------------
+# A few useful normalizers
+# ------------------------
+
+ACCEPT = Normalizer("accept")
+REJECT = Normalizer("reject")
+WAITLIST = Normalizer("waitlist")

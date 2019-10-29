@@ -5,6 +5,7 @@ from scripts.constants import Constants
 from feather import QuillDao
 from feather.email import GmailClient, JinjaEmailFactory
 from feather.csv import CSVWriter, CSVReader
+from feather.normalizer import ACCEPT, WAITLIST, REJECT
 
 # Configure the logger
 LOGGER = logging.getLogger(__name__)
@@ -64,21 +65,24 @@ def _main() -> None:
             # update database and queue email
             # --------------------
 
-            if evaluation.decision == "Reject":
+            # reject an applicant
+            if REJECT.matches(evaluation.decision):
                 dao.reject_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been rejected.")
 
                 email = email_factory.create_email(EMAIL_SUBJECT, "reject.html", evaluation.first_name)
                 client.send_mail(evaluation.email, email)
 
-            if evaluation.decision == "Accept":
+            # accept an applicant
+            elif ACCEPT.matches(evaluation.decision):
                 dao.accept_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been accepted.")
 
                 email = email_factory.create_email(EMAIL_SUBJECT, "accept.html", evaluation.first_name)
                 client.send_mail(evaluation.email, email)
 
-            elif evaluation.decision == "Waitlist":
+            # waitlist an applicant
+            elif WAITLIST.matches(evaluation.decision):
                 dao.waitlist_applicant(evaluation.email)
                 LOGGER.info(f"{evaluation.first_name}({evaluation.email}) has been waitlisted.")
 
