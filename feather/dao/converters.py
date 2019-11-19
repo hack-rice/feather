@@ -2,7 +2,7 @@
 into our own model objects.
 """
 from typing import Tuple
-from feather.models import Applicant, UnsubmittedUser
+from feather.models import Applicant, UnsubmittedUser, Attendee
 
 
 def _split_name(name: str) -> Tuple[str, str]:
@@ -55,3 +55,18 @@ def parse_to_unsubmitted_user(user_json) -> UnsubmittedUser:
     :return: an UnsubmittedUser model object
     """
     return UnsubmittedUser(user_json["_id"], user_json["email"])
+
+
+def parse_to_attendee(user_json) -> Attendee:
+    """Converter method that converts a user json object (as stored in quill's database)
+    into an Attendee.
+
+    :param user_json: User json object (as stored in quill's database)
+    :return: an Attendee model object
+    """
+    return Attendee(
+        email=user_json["email"],
+        name=user_json["profile"]["name"],
+        phone_number=user_json["confirmation"]["phoneNumber"],
+        school=user_json["profile"]["school"]
+    )

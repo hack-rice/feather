@@ -35,3 +35,14 @@ class Reimbursement(NamedTuple):
     first_name: str
     address: str
     amount: str
+
+
+class Attendee(NamedTuple):
+    """
+    Namedtuple that represents a hacker that attended the event. MLH requests
+    this information on each user after the event.
+    """
+    email: str
+    name: str
+    phone_number: str
+    school: str

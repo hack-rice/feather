@@ -2,8 +2,8 @@
 from typing import Iterator
 from pymongo import MongoClient
 
-from feather.dao.converters import parse_to_unsubmitted_user, parse_to_applicant
-from feather.models import Applicant, UnsubmittedUser
+from feather.dao.converters import parse_to_unsubmitted_user, parse_to_applicant, parse_to_attendee
+from feather.models import Applicant, UnsubmittedUser, Attendee
 
 
 class QuillDao:
@@ -70,9 +70,26 @@ class QuillDao:
         return None
 
     def get_confirmed_users(self, quill_base_url="") -> Iterator[Applicant]:
+        """
+        Getter method for users who have confirmed their accounts.
+
+        :param quill_base_url: the URL of your quill app (e.g. http://quill.herokuapp.com).
+            Defaults to "YOUR_BASE_URL".
+        :return: iterator of applicants
+        """
         return (
             parse_to_applicant(user_json, quill_base_url) for user_json in self._users.find()
             if user_json["status"]["confirmed"]
+        )
+
+    def get_attendees(self):
+        """
+        Get an iterator of attendees—users that attended the event.
+        :return: iterator of attendees—users that attended the event.
+        """
+        return (
+            parse_to_attendee(user_json) for user_json in self._users.find()
+            if user_json["status"]["checkedIn"]
         )
 
     # -------------------

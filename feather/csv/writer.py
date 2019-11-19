@@ -4,7 +4,7 @@ from os import path
 from typing import Iterable
 import logging
 
-from feather.models import Evaluation, Applicant
+from feather.models import Evaluation, Applicant, Attendee
 
 LOGGER = logging.getLogger(__name__)
 
@@ -79,3 +79,7 @@ class CSVWriter:
         """
         attr_list = ["email", "first_name", "last_name", "profile_link"]
         self._write_to_csv(title, applicants, attr_list)
+
+    def write_attendees_to_csv(self, title, attendees: Iterable[Attendee]):
+        attr_list = ["email", "name", "phone_number", "school"]
+        self._write_to_csv(title, attendees, attr_list)
