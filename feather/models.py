@@ -1,8 +1,9 @@
 """File that contains various model objects."""
-from typing import NamedTuple
+from dataclasses import dataclass
 
 
-class UnsubmittedUser(NamedTuple):
+@dataclass
+class UnsubmittedUser:
     """Namedtuple that represents a hackathon user who has
     registered their account but hasn't yet submitted their application.
     """
@@ -10,7 +11,8 @@ class UnsubmittedUser(NamedTuple):
     email: str
 
 
-class Applicant(NamedTuple):
+@dataclass
+class Applicant:
     """Namedtuple that represents a hackathon user who has
     submitted their application but hasn't yet been evaluated.
     """
@@ -22,14 +24,16 @@ class Applicant(NamedTuple):
     profile_link: str
 
 
-class Evaluation(NamedTuple):
+@dataclass
+class Evaluation:
     """Namedtuple that represents a hackathon user's evaluation."""
     email: str
     first_name: str
     decision: str
 
 
-class Reimbursement(NamedTuple):
+@dataclass
+class Reimbursement:
     """Namedtuple that represents a hackathon user's reimbursement info."""
     email: str
     first_name: str
@@ -37,7 +41,8 @@ class Reimbursement(NamedTuple):
     amount: str
 
 
-class Attendee(NamedTuple):
+@dataclass
+class Attendee:
     """
     Namedtuple that represents a hacker that attended the event. MLH requests
     this information on each user after the event.
